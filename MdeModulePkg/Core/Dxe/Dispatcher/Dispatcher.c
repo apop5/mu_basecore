@@ -27,6 +27,7 @@
   SOR   - Schedule On Request - Don't schedule if this bit is set.
 
 Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
+Copyright (c) Microsoft Corporation<BR>
 SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
@@ -414,7 +415,7 @@ CoreDispatcher (
     //
     // If the dispatcher is running don't let it be restarted.
     //
-    PERF_FUNCTION_END ();
+    PERF_FUNCTION_END (); // MU_CHANGE
     return EFI_ALREADY_STARTED;
   }
 
@@ -429,7 +430,7 @@ CoreDispatcher (
              &DxeDispatchEvent
              );
   if (EFI_ERROR (Status)) {
-    PERF_FUNCTION_END ();
+    PERF_FUNCTION_END (); // MU_CHANGE
     return Status;
   }
 
@@ -775,10 +776,7 @@ FvIsBeingProcessed (
   }
 
   KnownHandle = AllocateZeroPool (sizeof (KNOWN_HANDLE));
-  if (KnownHandle == NULL) {
-    ASSERT (KnownHandle != NULL);
-    return NULL;
-  }
+  ASSERT (KnownHandle != NULL);
 
   KnownHandle->Signature = KNOWN_HANDLE_SIGNATURE;
   KnownHandle->Handle    = FvHandle;
@@ -855,7 +853,6 @@ CoreFvToDevicePath (
   @retval EFI_ALREADY_STARTED   The driver has already been started. Only one
                                 DriverName may be active in the system at any one
                                 time.
-  @retval EFI_OUT_OF_RESOURCES  If memory could not be allocated for the DriverEntry.
 
 **/
 EFI_STATUS
@@ -873,11 +870,7 @@ CoreAddToDriverList (
   // NULL or FALSE.
   //
   DriverEntry = AllocateZeroPool (sizeof (EFI_CORE_DRIVER_ENTRY));
-  if (DriverEntry == NULL) {
-    ASSERT (DriverEntry != NULL);
-    return EFI_OUT_OF_RESOURCES;
-  }
-
+  ASSERT (DriverEntry != NULL);
   if (Type == EFI_FV_FILETYPE_FIRMWARE_VOLUME_IMAGE) {
     DriverEntry->IsFvImage = TRUE;
   }
@@ -1060,15 +1053,13 @@ CoreProcessFvImageFile (
       //
       if (gSecurity != NULL) {
         FvFileDevicePath = CoreFvToDevicePath (Fv, FvHandle, FileName);
+        Status           = gSecurity->FileAuthenticationState (
+                                        gSecurity,
+                                        AuthenticationStatus,
+                                        FvFileDevicePath
+                                        );
         if (FvFileDevicePath != NULL) {
-          Status = gSecurity->FileAuthenticationState (
-                                gSecurity,
-                                AuthenticationStatus,
-                                FvFileDevicePath
-                                );
           FreePool (FvFileDevicePath);
-        } else {
-          Status = EFI_OUT_OF_RESOURCES;
         }
 
         if (Status != EFI_SUCCESS) {
