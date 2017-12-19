@@ -31,6 +31,7 @@
   DxeCoreEntryPoint|MdePkg/Library/DxeCoreEntryPoint/DxeCoreEntryPoint.inf
   UefiDriverEntryPoint|MdePkg/Library/UefiDriverEntryPoint/UefiDriverEntryPoint.inf
   UefiApplicationEntryPoint|MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf
+  SecurityLockAuditLib|MdeModulePkg/Library/SecurityLockAuditDebugMessageLib/SecurityLockAuditDebugMessageLib.inf ## MU_CHANGE
   #
   # Basic
   #
@@ -218,9 +219,11 @@
 [Components]
   MdeModulePkg/Application/HelloWorld/HelloWorld.inf
   MdeModulePkg/Application/DumpDynPcd/DumpDynPcd.inf
-  MdeModulePkg/Application/MemoryProfileInfo/MemoryProfileInfo.inf
   MdeModulePkg/Library/ParallelLzmaCustomDecompressLib/ParallelLzmaCustomDecompressLib.inf       ## MU_CHANGE
+  MdeModulePkg/Application/MemoryProfileInfo/MemoryProfileInfo.inf
   MdeModulePkg/Library/MemoryTypeInformationChangeLibNull/MemoryTypeInformationChangeLibNull.inf ## MU_CHANGE
+  MdeModulePkg/Library/SecurityLockAuditDebugMessageLib/SecurityLockAuditDebugMessageLib.inf     ## MU_CHANGE
+  MdeModulePkg/Library/SecurityLockAuditLibNull/SecurityLockAuditLibNull.inf                     ## MU_CHANGE
   MdeModulePkg/Library/UefiSortLib/UefiSortLib.inf
   MdeModulePkg/Logo/Logo.inf
   MdeModulePkg/Logo/LogoDxe.inf
@@ -566,4 +569,3 @@
   }
 
 [BuildOptions]
-
