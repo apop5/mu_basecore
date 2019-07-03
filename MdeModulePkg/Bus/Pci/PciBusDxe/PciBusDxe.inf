@@ -85,12 +85,16 @@
   gEdkiiDeviceIdentifierTypePciGuid               ## SOMETIMES_CONSUMES
   gEfiLoadedImageDevicePathProtocolGuid           ## CONSUMES
 
+[Guids]
+  gEfiEventExitBootServicesGuid                   ## SOMETIMES_CONSUMES     ## MU_CHANGE
+
 [FeaturePcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdPciBusHotplugDeviceSupport      ## CONSUMES
   gEfiMdeModulePkgTokenSpaceGuid.PcdPciBridgeIoAlignmentProbe       ## CONSUMES
   gEfiMdeModulePkgTokenSpaceGuid.PcdUnalignedPciIoEnable            ## CONSUMES
   gEfiMdeModulePkgTokenSpaceGuid.PcdPciDegradeResourceForOptionRom  ## CONSUMES
   gEfiMdeModulePkgTokenSpaceGuid.PcdPciScanFuncIfFunc0Absent       ## CONSUMES
+  gEfiMdeModulePkgTokenSpaceGuid.PcdDeferBME                        ## MU_CHANGE
 
 [Pcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdSrIovSystemPageSize         ## SOMETIMES_CONSUMES
