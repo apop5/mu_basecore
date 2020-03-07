@@ -45,6 +45,12 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Library/PerformanceLib.h>
 #include <Library/ReportStatusCodeLib.h>
 #include <Library/Tcg2PhysicalPresenceLib.h>
+// MU_CHANGE_23086
+// MU_CHANGE [BEGIN] - Add the OemTpm2InitLib
+#include <Library/OemTpm2InitLib.h>
+// MU_CHANGE [END]
+
+#define PERF_ID_TCG2_DXE  0x3120
 
 typedef struct {
   CHAR16      *VariableName;
@@ -77,17 +83,8 @@ typedef struct {
   UINTN                        Next800155EventOffset;
 } TCG_EVENT_LOG_AREA_STRUCT;
 
-// Mapping of TPM return status to BIOS/OS TPM support and related flags (TPMPresentFlag, TpmUpdateFlag)
-// +-------------------+---------------------+-------------------+----------------+---------------+
-// | TPM Return Status | Support TPM in BIOS | Support TPM in OS | TPMPresentFlag | TpmUpdateFlag |
-// |-------------------|---------------------|-------------------|----------------|---------------|
-// | SUCCESS           | YES                 | YES               | TRUE           | FALSE         |
-// | FIELD_UPGRADE     | YES                 | NO                | FALSE          | TRUE          |
-// | Other FAIL        | NO                  | NO                | FALSE          | FALSE         |
-// +-------------------+---------------------+-------------------+----------------+---------------+
 typedef struct _TCG_DXE_DATA {
   EFI_TCG2_BOOT_SERVICE_CAPABILITY    BsCap;
-  BOOLEAN                             TpmUpdateFlag;
   TCG_EVENT_LOG_AREA_STRUCT           EventLogAreaStruct[TCG_EVENT_LOG_AREA_COUNT_MAX];
   BOOLEAN                             GetEventLogCalled[TCG_EVENT_LOG_AREA_COUNT_MAX];
   TCG_EVENT_LOG_AREA_STRUCT           FinalEventLogAreaStruct[TCG_EVENT_LOG_AREA_COUNT_MAX];
@@ -108,7 +105,6 @@ TCG_DXE_DATA  mTcgDxeData = {
     0,                                         // NumberOfPCRBanks
     0,                                         // ActivePcrBanks
   },
-  FALSE,
 };
 
 UINTN   mBootAttempts  = 0;
@@ -1415,14 +1411,16 @@ Tcg2SubmitCommand (
   )
 {
   EFI_STATUS  Status;
-  TPM_RC      ResponseCode;
-  UINT32      CurrentOutputBlockSize;
 
   if ((This == NULL) ||
       (InputParameterBlockSize == 0) || (InputParameterBlock == NULL) ||
       (OutputParameterBlockSize == 0) || (OutputParameterBlock == NULL))
   {
     return EFI_INVALID_PARAMETER;
+  }
+
+  if (!mTcgDxeData.BsCap.TPMPresentFlag) {
+    return EFI_DEVICE_ERROR;
   }
 
   if (InputParameterBlockSize > mTcgDxeData.BsCap.MaxCommandSize) {
@@ -1433,35 +1431,12 @@ Tcg2SubmitCommand (
     return EFI_INVALID_PARAMETER;
   }
 
-  //
-  // Always attempt to submit the command, but if the TPM is already flagged
-  // as not present, we expect it to fail other than the capsule update scenario.
-  //
-  CurrentOutputBlockSize = OutputParameterBlockSize;
-  Status                 = Tpm2SubmitCommand (
-                             InputParameterBlockSize,
-                             InputParameterBlock,
-                             &CurrentOutputBlockSize,
-                             OutputParameterBlock
-                             );
-  if (!mTcgDxeData.BsCap.TPMPresentFlag) {
-    // Special handling when TPM is thought to be absent
-    if ((CurrentOutputBlockSize >= sizeof (TPM2_RESPONSE_HEADER)) && !EFI_ERROR (Status)) {
-      // Command succeeded, check if it's actually TPM in update mode
-      ResponseCode = SwapBytes32 (ReadUnaligned32 ((UINT32 *)(OutputParameterBlock + 6)));
-      if (ResponseCode == TPM_RC_UPGRADE) {
-        // TPM is present but in update mode!
-        mTcgDxeData.TpmUpdateFlag        = TRUE;
-        mTcgDxeData.BsCap.TPMPresentFlag = TRUE;
-        return Status;        // Return success
-      }
-    }
-
-    // TPM is actually absent, return device error
-    return EFI_DEVICE_ERROR;
-  }
-
-  // Normal path: TPM is present, return whatever Tpm2SubmitCommand returned
+  Status = Tpm2SubmitCommand (
+             InputParameterBlockSize,
+             InputParameterBlock,
+             &OutputParameterBlockSize,
+             OutputParameterBlock
+             );
   return Status;
 }
 
@@ -2500,7 +2475,19 @@ OnReadyToBoot (
   EFI_STATUS    Status;
   TPM_PCRINDEX  PcrIndex;
 
-  PERF_FUNCTION_BEGIN ();
+  PERF_START_EX (mImageHandle, "EventRec", "Tcg2Dxe", 0, PERF_ID_TCG2_DXE);
+
+  // MU_CHANGE_23086
+  // MU_CHANGE [BEGIN] - Call OEM init hook.
+  Status = OemTpm2InitDxeReadyToBootEvent (mBootAttempts);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "OemTpm2InitDxeReadyToBootEvent returned %r. Aborting measurements!\n", Status));
+    mBootAttempts++;
+    return;
+  }
+
+  // MU_CHANGE [END]
+
   if (mBootAttempts == 0) {
     //
     // Measure handoff tables.
@@ -2581,7 +2568,7 @@ OnReadyToBoot (
   // Increase boot attempt counter.
   //
   mBootAttempts++;
-  PERF_FUNCTION_END ();
+  PERF_END_EX (mImageHandle, "EventRec", "Tcg2Dxe", 0, PERF_ID_TCG2_DXE + 1);
 }
 
 /**
@@ -2843,7 +2830,6 @@ DriverEntry (
   // Get supported PCR and current Active PCRs
   //
   Status = Tpm2GetCapabilitySupportedAndActivePcrs (&TpmHashAlgorithmBitmap, &ActivePCRBanks);
-  DEBUG ((DEBUG_INFO, "TpmHashAlgorithmBitmap = 0x%X, ActivePCRBanks = 0x%X\n", TpmHashAlgorithmBitmap, ActivePCRBanks));
   ASSERT_EFI_ERROR (Status);
 
   mTcgDxeData.BsCap.HashAlgorithmBitmap = TpmHashAlgorithmBitmap & PcdGet32 (PcdTcg2HashAlgorithmBitmap);
@@ -2881,6 +2867,16 @@ DriverEntry (
   DEBUG ((DEBUG_INFO, "Tcg2.HashAlgorithmBitmap - 0x%08x\n", mTcgDxeData.BsCap.HashAlgorithmBitmap));
   DEBUG ((DEBUG_INFO, "Tcg2.NumberOfPCRBanks      - 0x%08x\n", mTcgDxeData.BsCap.NumberOfPCRBanks));
   DEBUG ((DEBUG_INFO, "Tcg2.ActivePcrBanks        - 0x%08x\n", mTcgDxeData.BsCap.ActivePcrBanks));
+
+  // MU_CHANGE_23086
+  // MU_CHANGE [BEGIN] - Call OEM init hook.
+  Status = OemTpm2InitDxeEntryPreRegistration (&mTcgDxeData.BsCap);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "OemTpm2InitDxeEntryPreRegistration returned %r. Aborting DXE init!\n", Status));
+    return Status;
+  }
+
+  // MU_CHANGE [END]
 
   if (mTcgDxeData.BsCap.TPMPresentFlag) {
     //
