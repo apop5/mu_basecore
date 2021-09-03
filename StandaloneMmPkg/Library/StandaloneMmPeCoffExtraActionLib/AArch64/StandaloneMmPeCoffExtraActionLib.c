@@ -16,7 +16,10 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Library/PcdLib.h>
 #include <Library/PeCoffLib.h>
 #include <Library/PeCoffExtraActionLib.h>
-#include <Library/StandaloneMmMmuLib.h>
+// MU_CHANGE [BEGIN]
+// #include <Library/StandaloneMmMmuLib.h>
+#include <Library/MmuLib.h>
+// MU_CHANGE [END]
 
 typedef RETURN_STATUS (*REGION_PERMISSION_UPDATE_FUNC) (
   IN  EFI_PHYSICAL_ADDRESS  BaseAddress,
@@ -28,8 +31,7 @@ RETURN_STATUS
 UpdatePeCoffPermissions (
   IN  CONST PE_COFF_LOADER_IMAGE_CONTEXT  *ImageContext,
   IN  REGION_PERMISSION_UPDATE_FUNC       NoExecUpdater,
-  IN  REGION_PERMISSION_UPDATE_FUNC       ReadOnlyUpdater,
-  IN  REGION_PERMISSION_UPDATE_FUNC       ReadOnlyExecUpdater
+  IN  REGION_PERMISSION_UPDATE_FUNC       ReadOnlyUpdater
   )
 {
   RETURN_STATUS                        Status;
@@ -206,7 +208,8 @@ UpdatePeCoffPermissions (
         Base,
         SectionHeader.Misc.VirtualSize
         ));
-      ReadOnlyExecUpdater (Base, ALIGN_VALUE (SectionHeader.Misc.VirtualSize, SectionAlignment));
+      ReadOnlyUpdater (Base, ALIGN_VALUE (SectionHeader.Misc.VirtualSize, SectionAlignment));
+      NoExecUpdater (Base, ALIGN_VALUE (SectionHeader.Misc.VirtualSize, SectionAlignment));
     }
 
     SectionHeaderOffset += sizeof (EFI_IMAGE_SECTION_HEADER);
@@ -214,6 +217,49 @@ UpdatePeCoffPermissions (
 
   return RETURN_SUCCESS;
 }
+
+// MU_CHANGE [BEGIN] - Switch to the MmuLib abstraction
+STATIC
+EFI_STATUS
+ArmPeSetMemoryRegionNoExec (
+  IN  EFI_PHYSICAL_ADDRESS  BaseAddress,
+  IN  UINT64                Length
+  )
+{
+  return MmuSetAttributes (BaseAddress, Length, EFI_MEMORY_XP);
+}
+
+STATIC
+EFI_STATUS
+ArmPeClearMemoryRegionNoExec (
+  IN  EFI_PHYSICAL_ADDRESS  BaseAddress,
+  IN  UINT64                Length
+  )
+{
+  return MmuClearAttributes (BaseAddress, Length, EFI_MEMORY_XP);
+}
+
+STATIC
+EFI_STATUS
+ArmPeSetMemoryRegionReadOnly (
+  IN  EFI_PHYSICAL_ADDRESS  BaseAddress,
+  IN  UINT64                Length
+  )
+{
+  return MmuSetAttributes (BaseAddress, Length, EFI_MEMORY_RO);
+}
+
+STATIC
+EFI_STATUS
+ArmPeClearMemoryRegionReadOnly (
+  IN  EFI_PHYSICAL_ADDRESS  BaseAddress,
+  IN  UINT64                Length
+  )
+{
+  return MmuClearAttributes (BaseAddress, Length, EFI_MEMORY_RO);
+}
+
+// MU_CHANGE [END] - Switch to the MmuLib abstraction
 
 /**
   Performs additional actions after a PE/COFF image has been loaded and relocated.
@@ -232,9 +278,8 @@ PeCoffLoaderRelocateImageExtraAction (
 {
   UpdatePeCoffPermissions (
     ImageContext,
-    ArmClearMemoryRegionNoExec,
-    ArmSetMemoryRegionReadOnlyPerm,
-    ArmSetMemoryRegionReadOnlyExecPerm
+    ArmPeClearMemoryRegionNoExec,   // MU_CHANGE
+    ArmPeSetMemoryRegionReadOnly    // MU_CHANGE
     );
 }
 
@@ -256,8 +301,7 @@ PeCoffLoaderUnloadImageExtraAction (
 {
   UpdatePeCoffPermissions (
     ImageContext,
-    ArmSetMemoryRegionNoExec,
-    ArmSetMemoryRegionReadWritePerm,
-    ArmSetMemoryRegionReadWritePerm
+    ArmPeSetMemoryRegionNoExec,     // MU_CHANGE
+    ArmPeClearMemoryRegionReadOnly  // MU_CHANGE
     );
 }
