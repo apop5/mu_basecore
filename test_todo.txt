@@ -1,0 +1,513 @@
+pick 557089de6d TCMORPH: Remove unused packages from Tiano (command in comments).
+pick cb07547137 .gitattributes: Prevent line ending conversion
+pick 946f4e516b Update ReadMe with 202511 information
+pick 1bc8e56fc8 Merged PR 5328: MdeModulePkg/HiiDatabaseDxe: Fix linker error
+pick 9f7789c914 CryptoPkg: Remove remaining Arm references
+pick 70e464e94c Plugin - HostUnitTestCompilerPlugin update
+pick 44cc20e192 CI YAML Base Changes
+pick d4d2ac9173 BaseCore: Enable CI
+pick 1b77347804 BaseTools: Add Rust build support
+pick 6a9f5e9a11 .pytool/Plugin: Add Rust Host Unit Test CI plugin
+pick 15cdd9f7b1 BaseTools/Plugin: Add Rust Environment Check build plugin
+pick 776b5856ca MdePkg: Add Support for MSVC AARCH64 Build
+pick 491d390c81 Create a StandaloneMmCoreEntryNull to satisfy other archs
+pick 62c72354cd Implementation of GetVariable for Advanced Logger
+pick d3b5aaba68 Add a member to the PeiCore Private data structure for the Advanced Logger
+pick 263b90e7c0 MdeModulePkg: Use HwResetSytemLib
+pick f8566e6969 MdeModulePkg: Perform capsule reset with subtype
+pick 634603ec2a MdePkg: Remove EfiResetSystem() from UefiRuntimeLib
+pick 9aa34f3d5f UefiCpuPkg: Add support for testing the SMM page protections
+pick 77849807d2 BaseTools/Plugin/FlattenPdbs: Add plugin
+squash d5a9eeef9f [CHERRY-PICK] [SQUASH ON REBASE] Update FlattenPdbs Plugin to pick up additional symbols.
+pick 25cb7ccddc BaseTools: Add ParallelLzmaCompress tool GUID
+pick b689ed00a1 MdeModulePkg: Add ParallelLzmaCustomDecompressLib
+drop 18d57e416f MdeModulePkg: BdsDxe: Introduce infinite boot retries
+pick 7ae3c67c73 OverrideValidation: Add plugin and docs
+pick d3ff3e4eac Add CPU MP Debug Protocol
+pick 1bd6254da8 MdePkg: Add Support for Non-Blocking AP Dispatch in PEI
+pick 4a910e5b43 UefiCpuPkg: Implement PEI Non-Blocking AP Dispatch
+pick 4029ff54b3 MdeModulePkg: MemoryTypeInformationChangeLib: Add new interface
+pick d4892f5758 ShellPkg: Add MemoryTypeInformationChangeLib
+pick 3e9cc0f24d NetworkPkg: Add MemoryTypeInformationChangeLib
+pick c74f19131e MdeModulePkg: UefiBootManagerLib: Use MemoryTypeInformationChangeLib
+pick 0c4133b187 MdeModulePkg: Prevent system brick due to uefi MemoryTypeInformation var changes
+pick 2ffe0c116d FdSizeReportGenerator: Add plugin and docs
+pick c28bbcba82 NestedPackageCheck: Add plugin and docs
+pick 396593f313 ImageValidation: Add plugin and docs
+pick c98e9437fc Remove support for deprecated crypto from BaseCryptLib.
+pick d41752d370 [TCBZ3925] Correct the implementation of Pkcs7Sign
+pick 191d29206a Transition to Latest Shared Crypto
+pick af531e5bfa NetworkPkg: DSC changes for Shared Crypto
+pick 372b188bb4 UefiCpuPkg: DSC changes for Shared Crypto
+pick d7e7db88c8 MdePkg/Test: Create a host-based implementation of RngLib
+pick b1fa0c49f5 MdePkg: Add PanicLib Library
+pick 95c69d5241 MdeModulePkg: Use PanicLib in ResetSystemPei
+pick f421ef8d55 UefiCpuPkg: Use PanicLib in CpuDxe and CpuMpPei
+pick a2f9ef2d39 Edk2ToolHelper: Add plugin and docs
+pick 584a8b00ad BmpCheckPlugin: Add plugin and docs
+pick 3695be9bc9 SamplePlugin: Add plugin and docs
+pick e15e7fae08 Add DeviceStateLib and its dynamic PCD to MdeModulePkg
+pick 51bac227df renaming to match convention (#114)
+pick 9320dccbb1 BaseTools: Add support for PreCompiled Libs and Efi Files
+pick 4ed83d609d [OEMDATA] Add OEM Data build rule
+pick f8e4e9b6d6 [PCI_BME] PCI Bus Master Disable
+pick d12d86d688 Add support for initializing Max Payload Size during PCIe enumeration (#562)
+pick 279f066533 MdeModulePkg: SMI Profiler changes.
+pick fc349a3de6 Removed openssl and mbedtls submodules (#1018)
+pick 64e9f61021 MdePkg: Add Incompatible PCI ROM Space
+pick 48514ecee7 MdeModulePkg: Extend PciBusDxe to allow for ignoring option ROMs
+pick b808ddb852 BaseTools: tools_def: Apply Project Mu Changes
+pick 38f9b97214 BaseTools: build: Always log respfilelist.txt
+pick fd9bb0d809 BaseTools: Detect library class mismatch
+pick 44f4db2691 MdePkg: Add Cpu2 Protocol Defintion
+pick 88c5e6f3e6 MdeModulePkg: Use Cpu2 Protocol
+pick 4969b55336 MdePkg: Add EnableInterruptsAndSleep Function
+squash 18e13b478f [SQUASH ON REBASE] Clang/Gcc: Move EnableInterruptsAndSleep out of EnableInterrupts.nasm. (#1712)
+pick 704c75d7e0 MdeModulePkg: Support Additional Event TPLs
+pick 2d9741b30e MdePkg: Add Boot Option Complete Status Code
+pick 194544e4c0 MdeModulePkg: UefiBootManagerLib: Improve Status Codes
+pick 463604ab19 PcAtChipsetPkg: SerialIoLib: Allow Custom UART IO Port Base Address
+pick bb877b3a93 TCBZ2419: Add PcdProgressBarBackgroundColor to hold the background color of progress bar. (#46)
+pick 1fdb697738 TCBZ2586: Fixed PcdValueInit generation on linux
+pick e14a2a7797 Move PCD Binary load to a library
+pick 1cb6f6273e Merged PR 5008: Initial implementation or code coverage on basecore unittests
+pick b106fb5775 BaseTools: reformat HostBasedUnitTestRunner coverage results by inf (#616) (#688)
+pick a4f8e9a978 StandaloneMmPkg: Add PeiStandaloneMmHobProductionLib
+pick e60789ebaa TCBZ3398 and TCBZ3430: Make MessageLength the same size in EFI_MM_COMMUNICATE_HEADER for both IA32 and X64
+pick 7b2e72cb6b Introduce Policy Service package for handling data producer/consumers across phases
+pick 0c1b8b4e15 Merged PR 5330: Introduce autogen verified policy and their accessors
+pick ba94edb1ad MdeModulePkg: Install UFS Device Config Protocol before caching device config (#1031)
+pick 44ca8ec744 MdeModulePkg/Universal/Console/TerminalDxe: Extending the FIFO size.
+pick 566425ee0d MdeModulePkg/Universal/Console/TerminalDxe: Added a PCD to set the timer interval.
+pick b4386c06b3 MdeModulePkg/PciHostBridgeDxe: Ignore TypeIo for non X86/X64 architectures.
+pick c3e6e0e67a MdePkg/Include/AArch64/ProcessorBind.h: Add Deprecated option to allow opt-out of 64k Runtime Granularity.
+pick ca5c0e192f PcAtChipsetPkg/PcatRealTimeClockRuntimeDxe/PcRtc: Default year based on build time.
+pick 0820ddd613 MdeModulePkg: Add Locking support for Capsule Interface
+pick 0bfe7c0a6c MdeModulePkg: Implemented SecurityLockLib to log security milestones.
+pick 81e27d068c MdePkg: Add EFI_PRE_READY_TO_BOOT_GUID
+pick 2307ae27d2 Changed gEfiMdeModulePkgTokenSpaceGuid.PcdHiiOsRuntimeSupport default value to FALSE
+drop 3176847980 MdeModulePkg: Adds Performance Measurement V2
+pick aa9842e21f Perf-instrument PreReadyToBoot, ReadyToBoot, PostReadyToBoot signals and callbacks
+drop 4601b5b7f3 Merged PR 5181: Change FirmwarePerformanceDxe.c EndofDxeEvent tpl to TPL_CALLBACK
+pick 5dcfb783c2 BaseTools/Plugin/RustEnvironmentCheck: Use pytools Rust helpers (#1038)
+pick c8c2afb65d [MDLINT_PLUGIN] Add MarkdownLint checker as a CI Plugin
+drop 7634b699dd Fixed markdown lint errors in various .md files
+pick 1887a1a408 BaseTools/Plugin: Add the WindowsCapsuleSupport plugin
+pick bd337f80d6 BaseTools/Scripts: Add the GenFmpImageAuth and WindowsCapsuleFiles scripts
+pick fdfc6a8b14 MdeModulePkg: Modify Capsule to support non-RAM persistence across reset
+pick b702fa4eda MdeModulePkg: Add Mu DxeCapsuleLib changes and CapsulePersistLib
+pick 1771f19a80 UnitTestFrameworkPkg: Add new DUMP_HEX macro
+pick 06b7c2e2a9 NetworkPkg/UefiPxeBcDxe: Mark the device as removed when it is unplugged
+pick aef2f8ec13 StandaloneMmPkg/StandaloneMmMemLib: Communicate Buffer Validation Function
+pick fc096eb6e7 StandaloneMmPkg/StandaloneMmMemLib: Communicate Buffer Validation Function
+pick 1bc2ea58a4 Create a VarCheckPolicyLib for RuntimeDxe
+pick 114a1f2c53 MdeModulePkg: VariableRuntimeDxe: Create host-based unit test
+pick 528a328832 MdeModulePkg: VariableRuntimeDxe: Copy SCT tests
+pick 821c5a191d MdeModulePkg: VariableRuntimeDxe: Convert SCT tests to host-based tests
+pick 0b7116ad15 Add ExceptionPersistenceLib
+pick 15368c02a0 Updated SecPeiCpuException to use ExceptionPersistenceLib
+pick 8d6d435587 MdeModulePkg: Add MemoryProtectionHobLib
+pick f3a3282d6e MdeModulePkg: DxeMain: Use DxeMemoryProtectionHobLib
+pick ae9d6f9e6f MdePkg: Add Image Load Failure Status Code
+pick 1f80b5f184 MdeModulePkg: Update Memory Subsystem to Use DxeMemoryProtectionHobLib
+pick 16f2068f30 MdeModulePkg: PiSmmCore: Update to MemoryProtectionHobLib
+pick f2de0dde24 MdeModulePkg: Add Memory Protection Support Functions
+pick 9eaaa57a24 MdeModulePkg: Use Memory Protection Support Functionality
+pick 16a1f391c5 MdeModulePkg: PciHostBridgeDxe Map MMIO XP
+pick 4bcac02dd2 UefiCpuPkg: Use MemoryProtectionHobLib for Memory Protections
+pick f0a7e308a2 MdeModulePkg: Comment Out Memory Protection PCDs
+pick 761d843c02 MdePkg: Add PE/COFF NX_COMPAT Flag
+pick 452f016162 MdeModulePkg: Add Support for NX Compatible Images
+pick 1bc5baf8ca BaseTools: Ensure 4k Alignment on MSVC Built Binaries
+pick 64bf0521fa MdeModulePkg: Add Memory Protection Debug Protocol
+pick b8374261aa MdeModulePkg: Implement Compatibility Mode for Enhanced Memory Protection
+squash f8278f79e8 [SQUASH ON REBASE]DisableNullDetection: Make calling convention consistent. (#1710)
+squash 53527a0b9f [Squash On Rebase] MdeModulePkg: Unconditionally ApplyMemoryProtectionPolicy (#1773)
+drop 815bce938c MdeModulePkg: Sync settings when gEdkiiGcdSyncCompleteProtocolGuid is installed.
+pick b5c3655cd2 Docs: Update Memory Protection Feature Documentation
+pick f77a3c1941 NetworkPkg: Add a named event that is signalled when Snp->Initialize() is executed.
+pick 94d1ca42d1 ArpDriver: refetch Snp Mode data after running MnpConfigure
+pick 91e713682d NetworkPkg: Add debug messages for DHCP state changes, Tftp progress, and PxeBc progress.
+pick 071b12dc85 ShellPkg: Fix line breaks when printing to console
+pick 953c6bd2ff ShellPkg: Add Shell test apps
+pick 12abb104d9 MdeModulePkg: Removes short packet message and resets the RingDequeue
+pick 9ee8b1b6da MdeModulePkg: Adds Connect state to UsbBusDxe
+pick 6bdaa03ba0 MdeModulePkg: Adds platforms specific actions required at the start of BDS
+pick 27ed7bb0bb MdModulePkg: Various Graphics Changes
+pick fe59be8979 MdeModulePkg: HiiDatabaseDxe: Fill in the current background
+pick 9e95b08a33 MdeModulePkg: VariableServices: allow for variables to be reclaimed
+pick 869883b046 MdeModulePkg: Disable 4K alignment for PEI CapsuleX64
+pick 7051d56f1c MdeModulePkg: Add the VariablePolicyLib host-based UnitTest
+pick 6b47006968 MdeModulePkg: Add the VariablePolicy shell-based test app
+pick ce41696005 MdeModulePkg: Do not lock VarPolicy at EndOfDxe
+pick 64e4477444 MdeModulePkg: Add SecurityLockAudit call when locking VarPol
+pick 3bf85c7fca MdeModulePkg: Define and implement an optional VarPol lock callback interface
+pick af586dc13c MdeModulePkg: Switch to the new common code for VarPol locking
+pick 4bfe18584b PcAtChipsetPkg: Add VarPolicy to PcAtRealTimeClock variables
+pick 807e52a821 MdeModulePkg: Allow simple delete when VarPol is disabled
+pick bcbba6870b VariablePolicyLib: Add Variable Policy Info unit tests
+pick 361fb24954 MdeModulePkg: Don't Create Variable Policy for PlatformRecovery####
+pick cb889f08a5 MdeModulePkg: Don't Lock Variable Policy if Device is in Unit Test Mode
+pick ae199cce80 UnitTestFrameworkPkg\UnitTestFrameworkPkg.dec: Reenable access to PrivateInclude folder for mu_plus unit tests
+pick 1fed49eae8 Add MuCodeQlQueries.qls and pin to the 1.1.0 codeq/cpp-queries pack (#1062)
+pick b475498884 Change CpuDeadLoops to panic calls in PiSmmCpuCommon.c (#892)
+pick c5340dd04c MdeModulePkg: Update USB's Descriptor Information
+pick f48bee2994 MdeModulePkg: Tune how variable quotas work when working with HwErrRec
+pick 7f1ca4755f MdeModulePkg: UefiBootManagerLib: Boot option failure report
+pick 89e4faddbf MdeModulePkg: DxeCore: Fixed PXE boot system hang
+pick e2aa80e248 MdeModulePkg: PlatformBootManagerLib: Add PlatformBootManagerUnableToBoot
+pick 4e22c02a11 MdeModulePkg: Bds Remove default boot attempt PlatformDefaultBootOption.
+pick 405f87bbcd MdeModulePkg: DeviceManagerUiLib: Fix using uninitialized variable
+pick d5a23c6255 BaseTools: Add ClangPDBToolChain Plugin.
+pick c173e4cb9a UefiCpuPkg: Fixing page table handling for non-present pages. [202405] (#1081)
+pick 0c33b58b0e MdeModulePkg: Correct the placement of the variable policy locking
+pick e50ec7a116 BaseTools/build_rule.template: Set additional Rust module linker flags (#1098)
+pick d604b85884 NetworkPkg: CodeQL Fixes.
+pick a7f275f230 CodeQlFilters.yml: Add global CodeQL filter file to repo.
+pick fa6d55ae8b Host Based Unit Test updates (#837)
+pick 7bb7aa39e6 CryptoPkg: Require exact crypto version match (#1157)
+pick 452512b5b5 Added missing fix for ProductDataFormatter missed from 202311 (#1195)
+pick 212462cc95 Add Line Ending plugin (#1150)
+pick a4231b85bb Configure Terminal to be picked up by Consplitter
+pick 159cbf4d9f MdePkg: Addition of Mock libraries
+pick 55ec43925c MdeModulePkg: Addition of Mock libraries
+pick 6020e55296 UefiCpuPkg: Addition of Mock libraries
+pick dc970d4988 ShellPkg: Addition of Mock libraries
+pick ff85abadc6 StandaloneMmPkg: Addition of Mock libraries
+pick bce6857ac7 PolicyServicePkg: Addition of Mock libraries
+pick 221fa7a50b Add resource descriptor hob v2 for memory attributes usage (#1258)
+pick fdd0140c4f Temporarly remove VariableRuntimeDxeUnitTest from running in GCC (#1301)
+pick 43051451d7 WindowsVsToolChain: Filter vs vars on specific vc (#1310)
+pick 35f2ed51e0 BaseTools: Add GenStm
+pick bf11205a1c Add CPU_INFORMATION_HEADER struct to STM_HEADER
+pick 9601f61b08 Move STATIC_ASSERT abstraction to common file for BaseTools usage
+pick 935bdf69b6 BaseTools/UefiVarPatcher: Add plugin (#1326)
+pick 626d214149 MdeModulePkg/Core/PiSmmCore: Decouple MM core mailbox data
+pick 2189dd985b Add BuildReportEvaluation post build plugin (#1297)
+pick 9f6235fc60 Minor Plugin Tweaks
+pick 1f2082812c MdePkg: Nvme.h add unions for Number of Queues
+pick e78d66fa4a MdeModulePkg: NvmExpressDxe: Remove page mask
+pick 4c0cca53eb MdeModulePkg: NvmExpressDxe: Request queues from the controller.
+pick 8948e8b847 MdeModulePkg: NvmExpressDxe: Add get admin queue attributes function
+pick bde4a1f475 MdeModulePkg: NvmExpressDxe: Use Mqes value to limit queue size
+pick 944edf7a2c MdeModulePkg: NvmExpressDxe: Allocate Io Queue buffer after setting the number of queues with the controller.
+pick 4b434c6313 MdeModulePkg: Add alternative queue sizes in nvme driver to support specific devices
+pick 7fedce830f StandaloneMmPkg: Avoid updating attributes on 0 length sections
+pick c853249345 PeiMpLib: Add V2 Resource Descriptor HOB support to GetWakeupBuffer() (#1412)
+pick 088304a40a ImageValidation: Update how profiles are determined. (#1411)
+pick ad5bf71954 MdeModulePkg: DxeIpl: Update to Memory Protection Hob
+pick b79a6ef972 Update memory map descriptor merging logic to honor the bucket type information (#1429)
+pick 1c72e7f353 Create IoMmuLib
+pick a55efd01c8 Add IoMmu support to NonDiscoverablePciDeviceDxe
+pick 01e7321fc2 Use IoMmuLib in PciBusDxe and PciHostBridgeDxe
+pick 88f7eb70b9 MdeModulePkg: Fix CoherentPciIoUnmap (#1454)
+pick 80f02209d1 Adding MU_BASECORE Pkcs7Encrypt Support
+pick b1fb62e844 Change the scope of BmpCheckPlugin to global (#1499)
+pick 2ce64920a5 MdeModulePkg: ArmFfaLib: Add FFA_YIELD handling (#1503)
+squash 346e7b2ce7 [SQUASH ON REBASE] Revert "MdeModulePkg: ArmFfaLib: Add FFA_YIELD handling (#1503)"
+pick 93d33a5e1e Creating a base instance of FFA library (#1508)
+pick 6ed899cac8 [FF-A] Update Header to Include FFA_NS_RES_INFO_GET (#1520)
+pick 660a191548 [TPM][FF-A] Add Yield to FF-A Library (#1532)
+squash fa0a51e546 [SQUASH ON REBASE] Revert "[TPM][FF-A] Add Yield to FF-A Library (#1532)"
+pick 94c0911d54 MdeModulePkg: Image Services: Check Status of ProtectUefiImage
+pick b587d3a987 Xhci DMA buffer Allocation fix (#1539)
+pick 047d71c26c MdeModulePkg: Add gEdkiiNonDiscoverableDeviceUniqueIdProtocolGuid for deterministic UniqueId support in NonDiscoverablePciDeviceDxe (#1547)
+pick c0ab3a273c Adding check for underflow/overflow when iterating through resource descriptor hobs (#1549)
+pick 915c16abd2 Add Repo Remote Check Plugin (#1546)
+pick 781a05c816 Rust: update build_rule.template to copy symbols to OUTPUT (#1552)
+pick 539f2a6a90 Added explicit state validation in FindVariableEx() to skip variables with deleted state (0x3C) and only return valid variables (#1551)
+pick e5d51ca421 StandaloneMmPkg: StandaloneMmIplPei: Handle return status from MmAccess
+pick 597b1808db MdeModulePkg: MmCommBuffer: Add supervisor/user communicate differentiator
+pick c083315c7b StandaloneMmPkg: MmCommBufferUpdate: Adding new protocol
+pick 9da258c90d ArmPkg, DynamictablesPkg: Mu DSC Changes
+pick 527589ea3c ArmPkg: Disavow StandaloneMmMmuLib. Add ArmMmuLib
+pick d6b66750b6 ArmPkg/StandaloneMmCoreEntryPoint: Swap to ArmMmuLib
+pick 8e2f868afc ArmPkg: Fix recent typos
+pick 1ae9468e88 ArmPkg, ArmPlatformPkg: Enable CI
+pick aa0de854c2 ArmPkg: PlatformBootManagerLib: Add missing function required by Project Mu bds
+pick c48cbdfa47 ArmPlatformPkg: Updated PL011UartLib.c to not wait indefinitely during read
+pick b14506c080 ArmPkg:CpuDxe: Use the Memory Protection HOB
+pick e06081ca05 ArmPkg: Update the ARM MemoryAttributeProtocol to Not Check if Region is System Memory
+pick 1521c75291 ArmPkg: CpuDxe - Implement Memory Attribute Protocol Installation Policy Option (#200)
+pick 71185a2df2 ArmPlatformPkg: Consume PEI ArmMmuLib
+drop 9d19f8834b ArmPkg: Install Empty GCD Sync Protocol After SyncCacheConfig() (#228)
+pick 2dea1f9e5f ArmPkg: Fix call to BuildCpuHob in CpuPei.c (#295)
+pick 31e0a6248a ArmPkg,ArmPlatformPkg: Add CodeQlFilters.yml file
+pick 8714360b80 ArmPkg/ArmGicV3Dxe: Add UINT32 ControlSystemRegValue Previously, RegValue was being used for two values, one UINT32 and one UINT64. This was causing compiler warnings for converting between the two types.
+pick 3f8fc9d632 ArmPkg: Adds SMMUV3 DXE driver to enable DMA remapping through the IOMMU protocol.
+pick 0e3d917e59 IntelFspPkg,IntelFsp2WrapperPkg: Enable CI
+pick 8f5a8767a3 IntelFsp2Pkg: Add stuart path_env for FSP tools
+pick 25a9979a17 IntelFsp2WrapperPkg: Add Tpm2HelpLib to IntelFsp2WrapperPkg (#300)
+pick f2af7a9a3f EmbeddedPkg: [TCBZ2094] Fix FV2 Hob creation when processing FV file in PrePiLib
+drop 4ef2bf101d EmbededPkg: Fix markdownlint errors
+pick 8bbd45b9a8 EmbeddedPkg: Drop remaining ArmPkg and ArmPlatformPkg references
+pick 77a9d2b60d EmbeddedPkg, SecurityPkg: Enable CI
+pick dd73c51dd2 EmbeddedPkg, FmpDevicePkg, SecurityPkg: Mu DSC Changes
+pick ac24fb14ab SecurityPkg: Add Hash2CryptoLib
+pick ec141c9638 SecurityPkg/Hash2CryptoDxe: Use Hash2CryptoLib
+pick 8b68e82410 FmpDevicePkg: Improve library documentation
+pick d3c2df24e2 PrmPkg: Fix CI Plugin issues
+pick a4d4571581 FmpDevicePkg: Fix CI Plugin issues
+pick e9ef44bae0 FmpDevicePkg: Renaming shell test app to match convention
+pick 9562189f54 SecurityPkg: Add OemTpm2InitLib for hooks into TPM init process.
+pick da2e16d3bd SecurityPkg: Add support for Tpm2PolicyLocality assertions.
+pick 30504f5790 SecurityPkg:  Create Tcg2PreUefiEventLogLib interface
+drop 3944571b07 SecurityPkg: Improved performance changes for TCG2 modules
+pick f5fefe29b8 SecurityPkg: Break out the PromptForUserConfirmation() function from Tcg2 PPI.
+pick d10e33a663 SecurityPkg: Improve PCR allocation enforcement for varied platform support.
+pick 60a1a6944c SecurityPkg: Add support for Excluded Fvs in Dxe Tpm2 MeasuredBootLib
+pick 0411e4c03d SecurityPkg: Add NvUndefineSpaceSpecial to the Tpm2CommandLib.
+pick be2c2e23f7 SecurityPkg: Tcg2Dxe ExitBootServicesFailed handler TPL change to CALLBACK
+pick 4143f7699b SecurityPkg: Add a PCD to skip Tcg2Smm ACPI table measurement
+pick 5287168c10 SecurityPkg: Add gEfiTcg2MuProtocolGuid & Log Only function Interface
+pick 3330bab96b SecurityPkg: Minimized TCG2 Physical Presence Interface Library
+pick 0d85f47d6e SecurityPkg: Added NULL implementation for Tcg2PreUefiEventLogLib (#235)
+pick 348b4bd65e SecurityPkg: Add an assert to TCG log function if log is full (#257)
+pick c7c9c4c1ba SecurityPkg: Adding dTPM support for MM Core module type (#259)
+pick 05a588ebf0 FmpDevicePkg: Add Eku PCD to FmpDxe
+pick 2d688b96db SecurityPkg: Add Pkcs7 EKU PCD for FmpAuthentication Lib
+pick 311d411d1b SecurityPkg: Allow unsigned PK's to be set when we don't have a PK already
+pick 49bc61fb51 SecurityPkg: Remove custom mode setting during PK deletion
+pick 0b95de5d49 SecurityPkg: Support special case where PK is being deleted
+pick 8d0073dfea Require cspell 5.20.0
+pick 4ce82c0650 SecurityPkg: Move Platform Lockdown to EndOfDxe event
+pick 8e4b3cead7 SecurityPkg: Add Debug Message to show the TPM2 PCR bank info
+pick 0dff13fe36 SecurityPkg: Check for Tpm2GetCapabilitySupportedAndActivePcrs()
+pick ca81c97afb SecurityPkg: Do not allow SecureBootEnable to override mPlatformMode
+pick 8daba3cf19 SecurityPkg: Use helper function to display confirmation dialog
+pick 564d27d438 SecurityPkg: Do not allow Flags to bypass confirmation in Production
+pick 7b65989eb1 SecurityPkg: Make TPM2_Startup() return an error
+pick b879493575 SecurityPkg: CodeQL Fixes.
+pick 4d1b048373 SecurityPkg: Add measurement of Firmware Debugger Enabled based on DeviceState.
+pick 5bffec57da SecurityPkg: Remove PcdFirmwareDebuggerInitialized
+pick b3ea3c9fbd SecurityPkg/Test: Add MockTcgPpiLib
+pick 730718fac1 EmbeddedPkg: Implementing BuildResourceDescriptorV2 for PrePiHobLib (#366)
+pick 4226911cca EmbeddedPkg: Add IoMmu support to CoherentDmaLib & NonCoherentDmaLib (#410)
+pick 7deb05a7e2 SecurityPkg: Add support for checking if hash algorithms are supported
+pick 81840bf672 SecurityPkg: Introduce Tpm2HelpLib.
+pick 9eaf0da736 SecurityPkg: Do not run DxeImageVerificationLibGoogleTest
+pick 7a8ca3ed57 Remove ArmPkg Dependencies in StandaloneMmPkg
+pick 7b08459050 DynamicTablesPkg: Fix Markdownlint errors
+pick b4f182ff56 IntelFspPkg, IntelFsp2WrapperPkg: Fix Markdownlint errors
+pick 54f6601c44 NetworkPkg: Temporary remove TslSetServerName Call.
+drop eab041bc4f [Cherry-Pick] MdeModulePkg: Fix comparison with wider widths.
+drop f13583b221 [Cherry-Pick] MdeModulePkg: Fix missing NULL tests.
+drop 0e68874138 [Cherry-Pick] MdeModulePkg: Fix comparison with wider widths.
+drop 83939ec316 [Cherry-Pick] MdeModulePkg: Fix missing NULL tests.
+drop ff434864bb [Cherry-Pick] MdeModulePkg: Fix missing NULL tests.
+drop bb08d73107 [Cherry-Pick] MdeModulePkg: Fix missing NULL tests.
+drop a7f322193f [Cherry-Pick] MdeModulePkg: Fix comparison with wider widths.
+drop fc35aad522 [Cherry-Pick] MdeModulePkg: Correct documentation.
+drop 657c958140 [Cherry-Pick] MdeModulePkg: Fix missing NULL tests.
+drop 48f084c1fb [Cherry-Pick] MdeModulePkg: Fix unchecked return status.
+drop 159153bf3c [Cherry-Pick] MdeModulePkg: Fix useless tests.
+drop b1b1d68f97 [Cherry-Pick] MdeModulePkg: Fix recently introduced uninitialized variable usage.
+drop 67e75b5d2c [Cherry-Pick] MdeModulePkg: Fix regressions from 11687, 11689.
+pick 0e52927e22 Fix alignment of PE/COFF image address to section alignment (#1580)
+pick db8ffadfa3 MdeModulePkg/Variable: Move RT cache buffer allocation to DXE
+pick c8e592bd3b MdeModulePkg/VariableSmmRuntimeDxe: Disable var RT cache on alloc failure
+drop 1836f9b3d0 Revert "Fix alignment of PE/COFF image address to section alignment (#1580)"
+drop 2df9b5b2e1 [CHERRY-PICK] MdeModulePkg: Remove ambiguous negation of narrower type
+pick 9dd4ee3bf1 MdeModulePkg/Variable: Add PCD to control RT cache allocation (#1588)
+pick 3d652bce4f CryptoPkg: Add GetCryptoProviderVersionString to BaseCryptLib
+pick ddc1e32753 CryptoPkg: Delete ParallelHash256HashAll
+pick f6edaa96aa CryptoPkg: Update GetCryptoProviderVersionText
+pick 19f3aebf15 MdeModulePkg: Support for 64bit IoMmu Operations if allowed by attributes in NonDiscoverablePciDeviceDxe (#1589)
+pick a99f04eb94 CLANGPDB: SBSA: UnSafeUint64Mult undefined lld-link failure
+pick df17906fac CryptoPkg: Update BaseCryptLib unit tests
+pick da2885c4f0 CryptoPkg: Add OneCrypto protocol definition
+pick 0917bd7a3e CryptoPkg: Add BaseCryptLibOnOneCrypto library implementations
+pick fd400b75c2 CryptoPkg: Add OneCrypto protocol GUIDs and remove unused PCD include
+pick b77afa613a CryptoPkg: Update Readmes to reflect OneCrypto changes
+drop a294e4a7c8 [Cherry-Pick] MdeModulePkg: DxeReportStatusCodeLib: Do not query protocol
+drop 686effce25 [Cherry-Pick] MdeModulePkg: RuntimeDxeReportStatusCodeLib: Do not query protocol
+drop 3912a706db [Cherry-Pick] MdeModulePkg: Add unit tests for DxeReportStatusCodeLib
+pick 435892cd67 Update to enable branch protection
+pick 9b71481dba BaseTools: Fix MSVC AARCH64 Building of tools. (#1597)
+pick 14ad6b2105 NetworkPkg: Add IP address error handling in PxeBcDhcp6Sarr() (#1596)
+pick e00f6a6d38 Add MockSmmVariableProtocol for GoogleTest (#1608)
+pick 5a095d7858 MdePkg: DebugLib: Add DEBUG_PROPERTY_ASSERT_TELEMETRY_ENABLED
+drop 6c8a30ed32 MdePkg: Add FltUsedLib
+drop 8b9c7b5f4c [Cherry-Pick]MdeModulePkg: Fix regressions from 11686, 11687, 11688, 11689.
+pick 512551f2ec [FF-A] Update TPM Service for Manage Locality (#482)
+pick 5f0bc5c5eb ArmPkg: Change default EBS behavior for SMMU(s) to be abort (#449)
+pick c886ab4047 ArmPkg: Also disable translation when setting global abort for SmmuDxe EBS behavior (#453)
+pick 19f6f08d29 ArmPkg: Do not set attributes if the incoming attributes is outside of the mask (#455)
+drop 107775f202 [CHERRY-PICK] ArmPlatformPkg: MemoryInitPeiLib: Read PCDs into local variable
+drop 24c71c3072 [CHERRY-PICK] ArmPkg: MmCommunicationDxe: Handle when the region is already reported
+pick b8960d8a90 ArmPlatformPkg: MemoryInitPei: Properly check resource hob v2
+squash fb5e75cbf1 ArmPlatformPkg/MemoryInitPeiLib: Produce V2 resource descriptor HOBs (#407)
+squash 5e381f8de6 [SQUASH ON REBASE] ArmPlatformPkg: MemoryInitPeiLib: Update Resc Desc V2 HOB
+drop 59984fe196 [Cherry-Pick] MdePkg: AArch64Mmu.h: Fix define shifts
+drop 6a7c82d6e6 [Cherry-Pick] MdePkg: Add PE Target Support to AArch64
+drop 3c52492330 [Cherry-Pick] ArmPkg: ArmExceptionLib: Drop ExceptionHandlersEnd
+drop f779a08eec [Cherry-Pick] MdePkg, ArmPkg, ArmPlatformPkg: Create VECTOR_TABLE Macro
+drop dfaa7d0db5 [Cherry-Pick] ArmPkg: ArmPsciMpServices: Support PE Targets
+drop 68c1e68540 [Cherry-Pick] ArmPkg: ArmStandaloneMmCoreEntryPoint: Add CLANGPDB Support
+drop 9a689cee12 [Cherry-Pick] ArmPlatformPkg: PeilessSec: Support PE Targets
+drop b406b47a6a [Cherry-Pick] EmbeddedPkg: PrePiHobLib: Add Library/Protocol Dependencies
+drop 8da34b7727 [Cherry-Pick] EmbeddedPkg: PrePiMemoryAllocationLib: Add AllocateCopyPool
+drop 359f53729f [Cherry-Pick] StandaloneMmPkg: Correct Build Options for CLANGPDB
+drop 6b1512762f [Cherry-Pick] UefiCpuPkg: Add CLANGPDB AARCH64 Support
+drop 347ac89841 [Cherry-Pick] BaseTools: tools_def: Add support for CLANGPDB with AARCH64
+drop 5c823b1511 [CHERRY-PICK] MdePkg, MdeModulePkg/ArmFfaLib: add funcs to get partition info via regs
+drop f32bf623b5 [CHERRY-PICK] MdeModulePkg/ArmFfaLib: support ArmFfaLib wihtout Rx/Tx buffer
+drop 60602c5eaf [CHERRY-PICK] MdePkg,MdeModulePkg/ArmFfaLib: introduce ArmFfaGetPartitionInfo()
+pick dc2d92bf1e CryptoPkg: Add BaseCryptInit(..)
+pick 14afd58411 BaseTools: Add support for preserving build ID (#1609)
+pick 2830fc0a88 BaseTools: Fix MSVC AARCH64 Building of tools. (#1597)
+pick 16bbdb6c81 BaseTools: Update basetoolsbin_ext_dep for 202511.
+pick cc019cf24a StandaloneMmPkg: Switch to the MmuLib abstraction
+pick 38f30cc8dd BaseTools/Plugin/FlattenPdbs: Add plugin id to allow for easier overrides (#1622)
+pick 4a5370b67d NetworkPkg/Mtftp4Dxe: Prevent invalid memory dereference on MTFTP poll (#1623)
+pick ec86167dfe NetworkPkg: Reset DHCP Service Binding IO Status on Stop (#1620)
+pick 28c15b4aa4 NetworkPkg/DxeNetLib: Initialize MediaState to EFI_NOT_READY
+pick a064fcdb68 NetworkPkg/DxeNetLib: Make NetLibDetectMedia() calls at TPL_CALLBACK
+pick b3b4dc6ae9 NetworkPkg/UefiPxeBcDxe: Initialize IPV4 token in IPV4 branch (#1625)
+pick f868003a08 Create the MMU access lib to abstract memory protection settings
+pick 1657ad72cf IntelFsp2Pkg: Fix markdownlinterrors.
+drop 4099f6f5c5 [Cherry-Pick] PrmPkg/Library/DxePrmContextBufferLib/UnitTest: Fix CLANG error
+drop 75344d96c1 [Cherry-Pick] SecurityPkg/Library/SecureBootVariableLib/UnitTest: Fix CLANG
+drop 1ac57531a2 [Cherry-Pick] ArmPkg: Fix errors in MiscChassisManufacturerFunction
+drop 0f1e1aefb7 [Cherry-Pick] ArmPkg: Add Required Library Classes for ArmTransferListLib
+pick 3b197c48c5 CI: Fix pipelines for 202511
+pick 12f6ff31bf MdePkg: Line ending conversion BaseMmuLibNull.
+pick 050a6eed3a [Cherry-Pick] ArmPkg: ArmStandaloneMmCoreEntryPoint add missing guid
+pick 2b02e9422a .pytool: Add uncrustify disable/enable inline strings
+pick 24cd52e3e1 StandaloneMmPkg/MmCommunicationDxe: Enforce CommSize validation (#1629)
+pick 89aa501c97 ShellPkg: SMBIOS type 20 Extended Starting/Ending Address print type error
+drop 90127138ea UefiCpuPkg: Make X64 Page Table Definitions Public
+pick ef7bb4daa9 NetworkPkg: Add timeout polling for PXE media detection (#1636)
+pick 0a25cb6948 NetworkPkg/DxeNetLib: Report SNP workaround status code (#1640)
+drop f81afffcbe [CHERRY-PICK] ArmPkg/Driver: use ArmFfaGetPartitionInfo() in Mmcommunication
+pick d31a85e44d Update ArmSetMemoryAttributes to avoid setting invalid states during transitions (#463)
+pick 3f5454d10c ArmPlatformPkg: Remove DXE Core FV placement assumption in PeilessSec (#465)
+pick a588c9fd06 [FF-A] Update TPM Service for Manage Locality (#482)
+drop 19e1d30e6b [CHERRY-PICK] SecurityPkg/Library: use ArmFfaGetPartitionInfo() in Tpm2ServiceFfaLib
+pick 1447a07881 SecurityPkg: Remove global use pre-memory
+pick 0faffde488 SecurityPkg: Implement Tpm2StarupLib
+pick 047852164d Repo File Sync: 202511 and DevOps v18.0.3 (#1653)
+pick 022e28d373 pip: bump regex from 2025.11.3 to 2026.2.19 (#1650)
+pick cfb66e246c pip: bump pygount from 3.1.0 to 3.1.1 (#1648)
+pick 20b26adcb3 pip: update edk2-pytool-library requirement from ~=0.23.10 to ~=0.23.11 (#1649)
+pick 71462c7b6b pip: update edk2-pytool-extensions requirement from ~=0.29.11 to ~=0.30.6 (#1651)
+pick c12b9aa075 NetworkPkg/UefiPxeBcDxe: Add missing Token.Context initialization (#1655)
+drop 2085528529 MdePkg: FltUsedLib ClangPdb compatability (#1658)
+pick a4606716e6 [CHERRY-PICK] MdeModulePkg: Allow dynamic generation of HEST ACPI table
+pick f4942fbb45 [2511] NetworkPkg: Ip4Dxe/Ip6Dxe: Set SB notify to NULL after event close (#1662)
+pick 9994a208d9 [CHERRY-PICK] MdeModulePkg/VariableSmmRuntimeDxe: Fix EFI_UNSUPPORTED leak (#1668)
+pick dc4a903bb8 [CHERRY-PICK][FF-A] Remove ArmFfaLibBase (#1670) (#1671)
+pick 2a188c1f10 Repo File Sync: Bump actions/upload-artifact from 6 to 7 (#1676)
+pick f6987dd843 CryptoPkg/Library/OpensslLib: Fix CLANG compatibility issues
+pick 617fac8e38 CryptoPkg: Align PcdOpensslLibAssemblySourceStyleNasm token value
+pick 540acbe096 pip: update edk2-pytool-extensions requirement from ~=0.30.6 to ~=0.30.8 (#1674)
+pick 8a8023016b pip: bump regex from 2026.2.19 to 2026.2.28 (#1675)
+pick 8effab7705 CryptoPkg: Clean up TestBaseCryptLibHost INF file
+pick 08fafeb201 CryptoPkg: Update RsaPkcs7Tests for TCBZ3925
+pick 9fb56d0458 [CHERRY-PICK] ArmPkg: Add bounce buffering to IoMmu SmmuDxe implementation (#1672)
+pick a01af053c2 GitHub Action: Bump actions/download-artifact from 6 to 8 (#1664)
+pick d62a5e0165 GitHub Action: Bump actions/upload-artifact from 4 to 7 (#1665)
+pick d7a43195d6 GitHub Action: Bump actions/checkout from 4 to 6 (#1647)
+drop a4b7057529 Revert "MdeModulePkg: Sync settings when gEdkiiGcdSyncCompleteProtocolGuid is installed."
+drop 22363d5351 Revert "ArmPkg: Install Empty GCD Sync Protocol After SyncCacheConfig() (#228)"
+pick 67136f187c MdeModulePkg: Fix Memory Protections.
+drop 6cd8a09ed0 [CHERRY-PICK] MdeModulePkg: MmVariablePei: Populate correct v3 header
+drop c8535af0a6 [CHERRY-PICK] StandaloneMmPkg: StandaloneMmIplPei: MM Communicate v3 header check fix
+pick 4106ccbef3 [CHERRY-PICK] MdeModulePkg: CpuExceptionHandlerLib: Define X86_CPU_INTERRUPT_NUM
+pick e5e7b109e2 [CHERRY-PICK] UefiCpuPkg: Set up 256 IDT Descs in SEC/PEI/SMM
+pick 18be4ff010 [CHERRY-PICK] MdeModulePkg: DxeIpl IA32: Use 256 IDT Entries
+pick 3191b4d30f [CHERRY-PICK]UefiCpuPkg: Converge SEC/PEI and SMM/DXE Exception Handler ASM
+pick 5bf68b6629 ArmPkg: Fix incorrect bit width mask for SP_EL0
+drop 8deecac88b [CHERRY-PICK] SecurityPkg: Fix Tcg2SubmitCommand in TPM field upgrade scenario
+drop c1b572470a [CHERRY-PICK] SecurityPkg: Fix Tcg2SubmitCommand in most cases
+pick 9a680abaea Support IORT revision 6 (#1684)
+pick 4de4631637 [2511] NetworkPkg/UefiPxeBcDxe: Add UDP Completion Tokens to PXEBC_PRIVATE_DATA (#1689)
+drop fcc4a33960 [CHERRY-PICK] MdeModulePkg: PciBusDxe: Degrade MEM64 to PMEM64 when bridge lacks MEM64
+pick 4de8ea12ab ArmPkg/PeilessSec: Consume Tpm2StartupLib (#1692)
+pick 1b10d50dd6 [CHERRY-PICK]MdeModulePkg: Add helper to check if FF-A is supported
+pick fa4345dc93 [CHERRY-PICK]MdeModulePkg: Remove global usage in ArmFfaCommon
+pick ef02917a2a [CHERRY-PICK]MdeModulePkg: Remove global usage from ArmFfaSecRxTxMap
+pick b5af296569 [CHERRY-PICK]MdeModulePkg: Use EFI_PAGES_TO_SIZE macro in ArmFfaSecRxTxMap
+pick 2680d9b246 [CHERRY-PICK]MdeModulePkg: Code/Comment cleanup
+pick 6f2cd4539b [CHERRY-PICK]MdeModulePkg: Add Unmap Callback
+pick b01e3a94da Fix VariableSmmRuntimeDxe MM communicate v3 buffer sizing (#1695)
+pick 5cd140a7fb MdeModulePkg: Add RealTimeClockLibNull
+drop 1f7f96dfcf [Cherry-Pick] MdePkg/BaseFdtLib: Add more wrappers
+pick ed7b24fe61 [Cherry-Pick] ArmPkg/ArmStandaloneMmCoreEntryPoint: Ensure section length alignment
+pick 2dbcd68188 [Cherry-Pick] StandaloneMmPkg: Ensure section length alignment
+pick 823f5e21f9 Repo File Sync: Add extra_steps parameter to MuDevOpsWrapper.yml (#1699)
+pick 9f8e0b37b9 Repo File Sync: Group Dependabot Prs and update to create-github-app-token@v3 (#1702)
+pick 1fc30119e0 [release/202511] Update BaseTools ext dep to v2025110000.0.1 (#1700)
+drop 7949639d68 Revert "UefiCpuPkg: Make X64 Page Table Definitions Public"
+pick 5ba3221588 [CHERRY-PICK]MdePkg: Make X64 Page Table Definitions Public
+pick 7e1abf9945 [CHERRY-PICK] UefiCpuPkg: Consume Public Page Table Definitions
+drop 027a12dc67 Revert "MdeModulePkg: BdsDxe: Introduce infinite boot retries"
+pick 88656f32b6 MdeModulePkg: BdsDxe: Introduce infinite boot retries
+drop be64a61656 Revert "EmbededPkg: Fix markdownlint errors"
+pick b8c2ca4f2d EmbeddedPkg: fix mdlint issues
+drop d181aa7874 Revert "Fixed markdown lint errors in various .md files"
+pick 419d657524 UnitTestFrameworkPkg: fix mdlint issues
+pick 3dcc40874f BaseTools: fix mdlint issues
+pick 2fdcde8a8d MdeModulePkg: fix mdlint issues
+pick eadb9c77b0 MdePkg: fix mdlint issues
+drop ec3ae93177 Revert "SecurityPkg: Improved performance changes for TCG2 modules"
+pick d57ff05287 [Cherry-Pick] SecurityPkg: Refactor performance to use new PERF_FUNCTION_* measurements
+drop 18fc64780a Revert "Merged PR 5181: Change FirmwarePerformanceDxe.c EndofDxeEvent tpl to TPL_CALLBACK"
+pick b57a0d326f [Cherry-Pick] MdeModulePkg: Change EndofDxeEvent TPLs to TPL_CALLBACK
+drop 3c4e375ecd Revert "MdeModulePkg: Adds Performance Measurement V2"
+pick 7692792948 [Cherry-Pick] MdeModulePkg: Update performance measurements to use new perf macros
+pick a95ff1bc71 MdeModulePkg: Build Performance HOB from SEC performance data.
+pick 7e09c47ac6 [release/202511] Update BaseTools ext dep to v2025110000.0.2 (#1713)
+pick e0ab04da93 BaseTools: Prevent Subsection PCDs from polluting global expressions
+pick c79a0f984a [Cherry-Pick] MdePkg/BaseFdtLib: Implement new libfdt wrappers
+pick 8d9ab065ca [Cherry-Pick] MdePkg/BaseFdtLib: FdtGetName, FdtGetPath
+pick 90d342b21a [Cherry-Pick] MdePkg/BaseFdtLib: Header style update to FdtOverlayApply and FdtStrerror
+pick 10eba6064f [Cherry-Pick] MdePkg: Ignore FdtLib.h for ECC
+pick 1f8055ca6e Global: Remove backport workflow. (#1719)
+pick 5989ad271e GitHub Action: Bump create-github-app-token from 2 to 3, actions/setup-python from 5 to 6
+pick 5192ac4751 [CHERRY-PICK] BaseTools: Suppress C4028 warning to support older VS toolchain builds
+pick 3f409b4f6f [CHERRY-PICK] BaseTools: Enable control flow guard for Windows builds
+pick 6dcd36fba6 NetworkPkg/Dhcp6Dxe: Prevent potential infinite hang in EfiDhcp6Stop() (#1722)
+pick dc5a5b4efb [Cherry-Pick] Revert "MdeModulePkg/PciBusDxe: Degrade MEM64 to PMEM64..."
+pick 72bc4b3deb MdeModulePkg: PciBusDxe: Degrade MEM64 to PMEM64 when bridge lacks MEM64
+pick ad7b24e540 CryptoPkg: Add OneCrypto binary external dependency
+pick 934abb8e4d [release/202511] Update BaseTools ext dep to v2025110000.0.5 (#1727)
+pick 7f9a7c40c9 Add Uefi Shell test app for the BootManagerPolicy Protocol (#1725)
+pick 62dc344182 MdeModulePkg: Signal PreReadyToBoot
+pick 15bfe89def Repo File Sync: Update to Mu DevOps v18.0.4 (#1729)
+pick 75986b34d8 [CHERRY-PICK] BaseTools: Add lcov error tolerance for vendored source
+pick 4ab49d777a pip: bump the edk2-pytool-library, edk2-pytool-extension and regex (#1733)
+drop 86839acf64 Revert "MdePkg: FltUsedLib ClangPdb compatability (#1658)"
+drop afc22fc9b7 Revert "MdePkg: Add FltUsedLib"
+drop 919765a65b UefiCpuPkg: ArmMmuLib: Check if Block Split Following Page Alloc
+pick 8178984858 [Cherry-Pick] BaseTools: Only check for GCC prefixes when targeting
+pick 6bae370406 [CHERRY-PICK] MdePkg,MdeModulePkg: Add FFA_YIELD command
+pick e86378e6ea [CHERRY-PICK] MdeModulePkg: Add library class SafeIntLib where ArmFfaCommon.c is used
+pick 7697e61b49 CryptoPkg: Use Openssl NASM for Windows host-based unit tests
+pick 3b8c23ddb8 CryptoPkg: Add CLANGPDB AArch64 Support
+pick 9052be2aca CryptoPkg: Add AARCH64-PE Target to OpenSSL Gen
+pick cf79c3d426 CryptoPkg: Prevent PCD conflict
+pick d457837067 Repo File Sync: synced file(s) with microsoft/mu_devops
+pick a17e2388b5 PolicyServicePkg: Prevent memcpy instrinsic
+pick eca2e6e73e Update BaseTools external dependency to v2025110001.0.2
+pick d1e8892171 .github: Add Mu PR Validation workflow (#1737)
+pick 4db4609bdd mu-pr-validation-pending.yml: Temporarily disable commit status upates (#1755)
+drop dfe92b1b09 Revert "UefiCpuPkg: ArmMmuLib: Check if Block Split Following Page Alloc"
+pick 872dc155a9 [CHERRY-PICK] UefiCpuPkg: ArmMmuLib: Check if Block Split Following Page Alloc
+pick 07dacb222a pip: bump edk2-pytool-library to 0.23.13, regex to 2026.4.4 (#1753)
+pick 241aa1d636 Repo File Sync: ClangPDB CI workflow updates (#1762)
+pick 62f609a4f2 NetworkPkg/DxeNetLib: Clamp timeouts to MAX_INT64
+pick e7d483779a NetworkPkg/DxeNetLib: Reduce SNP media detect timeout and retry attempts
+pick e667c7255d SecurityPkg: Remove Globals from HashLibTpm2PeilessSec (#1752)
+pick 803cd6a247 Repo File Sync: Update Pr Validation from actions/github-script@v8 to actions/github-script@v9  (#1766)
+pick 8cbf7761de SecurityPkg: Introduce TpmTestApp (#1760)
+squash dff1fa7ba2 [SQUASH ON REBASE]SecurityPkg: Add missing TpmTestApp markdown information (#1768)
+pick 7c66eeb7e5 GitHub Action: Update mu-pr-validation workflow to use actions/github-script 9 (#1761)
+pick 9658bab20f pip: bump pygount from 3.1.1 to 3.2.0 (#1767)
+pick 4b8c729404 [Cherry-Pick] CryptoPkg: Added MockBaseCryptLib for google test
+pick c9fd5f978a [Cherry-Pick] MdeModulePkg: Added several mock libraries for google test
+pick 3018f1b6f9 [Cherry-Pick] MdePkg: Added several mock libraries for google test
+pick 201039c2a8 ArmPlatformPkg: MemoryInitPeiLib: Loosen HOB Check
+pick d874d86555 EmbeddedPkg/VirtualRealTimeClockLib: Fix RTC offset logic for negative TimeZone (#1765)
+pick cd99a37752 [release/202511] Update BaseTools ext dep to v2025110001.0.3 (#1772)
+pick 58f7601436 [CHERRY-PICK] MdeModulePkg: Don't Allow Guard Pages to Cross Bin Boundaries
