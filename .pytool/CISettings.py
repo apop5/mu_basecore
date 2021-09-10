@@ -65,7 +65,14 @@ class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManag
                 "UnitTestFrameworkPkg",
                 "ArmPkg",
                 "DynamicTablesPkg",
-                "ArmPlatformPkg"
+                "ArmPlatformPkg",
+                "SecurityPkg",
+                "FmpDevicePkg",
+                "FatPkg",
+                "EmbeddedPkg",
+                "PrmPkg",
+                "IntelFsp2Pkg",
+                "IntelFsp2WrapperPkg"
                 )
 
     def GetArchitecturesSupported(self):

@@ -112,8 +112,39 @@ extends:
         ArchList: $(arch_list)
         SelfHostAgent: true
 <<<<<<< HEAD:.azurepipelines/Ubuntu-GCC5.yml
+<<<<<<< HEAD:.azurepipelines/Ubuntu-GCC5.yml
       TARGET_EMBEDDED_PRM:
         Pkgs: 'EmbeddedPkg,PrmPkg'
+=======
+        Pkgs: 'EmbeddedPkg,PrmPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+      TARGET_FMP_FAT:
+        Pkgs: 'FmpDevicePkg,FatPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+      TARGET_SECURITY:
+        Pkgs: 'SecurityPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+      TARGET_OTHER_ARM:
+        Pkgs: 'EmbeddedPkg,PrmPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+        SelfHostAgent: true
+      TARGET_FMP_FAT_ARM:
+        Pkgs: 'FmpDevicePkg,FatPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+        SelfHostAgent: true
+      TARGET_SECURITY_ARM:
+        Pkgs: 'SecurityPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+        SelfHostAgent: true
+      TARGET_INTEL_SILICON:
+        Pkgs: 'IntelSiliconPkg'
+>>>>>>> 77a9d2b60d (EmbeddedPkg, SecurityPkg: Enable CI):.azurepipelines/Ubuntu-GCC.yml
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
         ArchList: $(arch_list)
       TARGET_FMP_FAT:
