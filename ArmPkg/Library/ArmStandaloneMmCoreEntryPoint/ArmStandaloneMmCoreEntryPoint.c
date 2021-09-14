@@ -35,7 +35,7 @@
 #include <Library/BaseLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/SerialPortLib.h>
-#include <Library/StandaloneMmMmuLib.h>
+#include <Library/ArmStandaloneMmMmuLib.h> // MU_CHANGE
 #include <Library/SafeIntLib.h>
 #include <Library/PcdLib.h>
 
@@ -1186,8 +1186,8 @@ CEntryPoint (
              ImageBase,
              SectionHeaderOffset,
              NumberOfSections,
-             ArmSetMemoryRegionReadOnlyPerm,
-             ArmSetMemoryRegionReadWritePerm
+             ArmSetMemoryRegionReadOnly,
+             ArmClearMemoryRegionReadOnly
              );
   if (EFI_ERROR (Status)) {
     goto finish;
@@ -1195,7 +1195,8 @@ CEntryPoint (
 
   if (ImageContext.ImageAddress != (UINTN)TeData) {
     ImageContext.ImageAddress = (UINTN)TeData;
-    ArmSetMemoryRegionReadWritePerm (ImageBase, SIZE_4KB);
+    ArmSetMemoryRegionNoExec (ImageBase, SIZE_4KB);
+    ArmClearMemoryRegionReadOnly (ImageBase, SIZE_4KB);
 
     Status = PeCoffLoaderRelocateImage (&ImageContext);
     ASSERT_EFI_ERROR (Status);
