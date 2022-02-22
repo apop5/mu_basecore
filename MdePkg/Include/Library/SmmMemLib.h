@@ -10,7 +10,8 @@
 
 **/
 
-#pragma once
+#ifndef _SMM_MEM_LIB_H_
+#define _SMM_MEM_LIB_H_
 
 /**
   This function check if the buffer is valid per processor architecture and not overlap with SMRAM.
@@ -127,3 +128,23 @@ SmmSetMem (
   IN UINTN  Length,
   IN UINT8  Value
   );
+
+/** MU_CHANGE Start: Add Communication Buffer Validation
+  This function should be used for MMI handlers to check if the communicate buffer is valid.
+
+  @param Buffer  The buffer start address to be checked.
+  @param Length  The buffer length to be checked.
+
+  @retval TRUE  This communicate buffer is valid per processor architecture.
+  @retval FALSE This communicate buffer is not valid per processor architecture.
+**/
+BOOLEAN
+EFIAPI
+SmmCommBufferValid (
+  IN EFI_PHYSICAL_ADDRESS  Buffer,
+  IN UINT64                Length
+  );
+
+// MU_CHANGE End: Add Communication Buffer Validation
+
+#endif
