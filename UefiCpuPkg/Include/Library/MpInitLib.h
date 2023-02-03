@@ -6,7 +6,8 @@
 
 **/
 
-#pragma once
+#ifndef __MP_INIT_LIB_H__
+#define __MP_INIT_LIB_H__
 
 #include <Ppi/SecPlatformInformation.h>
 #include <Protocol/MpService.h>
@@ -63,7 +64,7 @@ MpInitLibGetNumberOfProcessors (
 
   @param[in]  ProcessorNumber       The handle number of processor.
                                     Lower 24 bits contains the actual processor number.
-                                    BIT24 indicates if the EXTENDED_PROCESSOR_INFORMATION will be retrieved.
+                                    BIT24 indicates if the EXTENDED_PROCESSOR_INFORMATION will be retrived.
   @param[out] ProcessorInfoBuffer   A pointer to the buffer where information for
                                     the requested processor is deposited.
   @param[out] HealthData            Return processor health data.
@@ -378,3 +379,26 @@ MpInitLibStartupAllCPUs (
   IN  UINTN             TimeoutInMicroseconds,
   IN  VOID              *ProcedureArgument      OPTIONAL
   );
+
+// MU_CHANGE START: Support for protocol for reporting multi-processor debug info
+
+/**
+  Add CPU_MP_DEBUG_PROTOCOL entry to the global list
+
+  @param[in]  StackBuffer      Start of AP stack buffer
+  @param[in]  StackSize        Size of the stack
+  @param[in]  CpuNumber        AP CPU number
+  @param[in]  IsSwitchStack    If the input buffer is the CPU switch stack
+**/
+VOID
+EFIAPI
+AppendCpuMpDebugProtocolEntry (
+  UINTN    StackBuffer,
+  UINTN    StackSize,
+  UINTN    CpuNumber,
+  BOOLEAN  IsSwitchStack
+  );
+
+// MU_CHANGE END
+
+#endif
