@@ -1,4 +1,4 @@
-/** @file
+﻿/** @file
   Multiple-Processor initialization Library.
 
   Copyright (c) 2016 - 2019, Intel Corporation. All rights reserved.<BR>
@@ -378,3 +378,24 @@ MpInitLibStartupAllCPUs (
   IN  UINTN             TimeoutInMicroseconds,
   IN  VOID              *ProcedureArgument      OPTIONAL
   );
+
+// MU_CHANGE - Start - Report multiprocessor debug stack information through protocol entries.
+
+/**
+  Add CPU_MP_DEBUG_PROTOCOL entry to the global list
+
+  @param[in]  StackBuffer      Start of AP stack buffer
+  @param[in]  StackSize        Size of the stack
+  @param[in]  CpuNumber        AP CPU number
+  @param[in]  IsSwitchStack    If the input buffer is the CPU switch stack
+**/
+VOID
+EFIAPI
+AppendCpuMpDebugProtocolEntry (
+  UINTN    StackBuffer,
+  UINTN    StackSize,
+  UINTN    CpuNumber,
+  BOOLEAN  IsSwitchStack
+  );
+
+// MU_CHANGE - End - Report multiprocessor debug stack information through protocol entries.
