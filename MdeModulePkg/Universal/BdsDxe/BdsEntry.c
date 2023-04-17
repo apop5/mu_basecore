@@ -388,6 +388,7 @@ BootBootOptions (
   //
   // Attempt boot each boot option
   //
+
   for (Index = 0; Index < BootOptionCount; Index++) {
     //
     // According to EFI Specification, if a load option is not marked
@@ -413,10 +414,7 @@ BootBootOptions (
     //
     EfiBootManagerBoot (&BootOptions[Index]);
 
-    //
-    // If infinite retries is enabled, do not break out of the loop.
-    // This allows all boot options to be attempted on each iteration.
-    //
+  // MU_CHANGE - Start - Allow retry loop control via PcdSupportInfiniteBootRetries.
     if (!PcdGetBool (PcdSupportInfiniteBootRetries)) {
       //
       // If the boot via Boot#### returns with a status of EFI_SUCCESS, platform firmware
@@ -429,6 +427,8 @@ BootBootOptions (
         break;
       }
     }
+
+    // MU_CHANGE - End - Allow retry loop control via PcdSupportInfiniteBootRetries.
   }
 
   return (BOOLEAN)(Index < BootOptionCount);
