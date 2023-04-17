@@ -388,6 +388,7 @@ BootBootOptions (
   //
   // Attempt boot each boot option
   //
+
   for (Index = 0; Index < BootOptionCount; Index++) {
     //
     // According to EFI Specification, if a load option is not marked
@@ -413,11 +414,13 @@ BootBootOptions (
     //
     EfiBootManagerBoot (&BootOptions[Index]);
 
-    //
-    // If infinite retries is enabled, do not break out of the loop.
-    // This allows all boot options to be attempted on each iteration.
-    //
+    // MU_CHANGE [BEGIN] - Support infinite boot retries
+    //  Changes for PcdSupportInfiniteBootRetries are meant to minimize upkeep in mu repos.
+    //   If/when upstreaming this change, refactoring calling loop in BdsEntry() would be
+    //   better location.
     if (!PcdGetBool (PcdSupportInfiniteBootRetries)) {
+      // MU_CHANGE [END] - Support infinite boot retries
+
       //
       // If the boot via Boot#### returns with a status of EFI_SUCCESS, platform firmware
       // supports boot manager menu, and if firmware is configured to boot in an
@@ -428,7 +431,14 @@ BootBootOptions (
         EfiBootManagerBoot (BootManagerMenu);
         break;
       }
+
+      // MU_CHANGE [BEGIN]- Support infinite boot retries
+      //  Changes for PcdSupportInfiniteBootRetries are meant to minimize upkeep in mu repos.
+      //   If/when upstreaming this change, refactoring calling loop in BdsEntry() would be
+      //   better location.
     }
+
+    // MU_CHANGE [END]- Support infinite boot retries
   }
 
   return (BOOLEAN)(Index < BootOptionCount);
@@ -838,31 +848,24 @@ BdsEntry (
   // file path for removable media if the platform supports Platform Recovery.
   //
   if (PlatformDefaultBootOptionValid && PcdGetBool (PcdPlatformRecoverySupport)) {
-    //
-    // Get the current PlatformRecovery options. Check if the platform recovery already exists, or
-    // find the next unused platform recovery option number so it can be created
-    //
-    Index       = 0;
     LoadOptions = EfiBootManagerGetLoadOptions (&LoadOptionCount, LoadOptionTypePlatformRecovery);
-    if (LoadOptions != NULL) {
-      if (EfiBootManagerFindLoadOption (&PlatformDefaultBootOption, LoadOptions, LoadOptionCount) == -1) {
-        for ( ; Index < LoadOptionCount; Index++) {
-          //
-          // The PlatformRecovery#### options are sorted by OptionNumber.
-          // Find the the smallest unused number as the new OptionNumber.
-          //
-          if (LoadOptions[Index].OptionNumber != Index) {
-            break;
-          }
+    if (EfiBootManagerFindLoadOption (&PlatformDefaultBootOption, LoadOptions, LoadOptionCount) == -1) {
+      for (Index = 0; Index < LoadOptionCount; Index++) {
+        //
+        // The PlatformRecovery#### options are sorted by OptionNumber.
+        // Find the the smallest unused number as the new OptionNumber.
+        //
+        if (LoadOptions[Index].OptionNumber != Index) {
+          break;
         }
       }
 
-      EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
+      PlatformDefaultBootOption.OptionNumber = Index;
+      Status                                 = EfiBootManagerLoadOptionToVariable (&PlatformDefaultBootOption);
+      ASSERT_EFI_ERROR (Status);
     }
 
-    PlatformDefaultBootOption.OptionNumber = Index;
-    Status                                 = EfiBootManagerLoadOptionToVariable (&PlatformDefaultBootOption);
-    ASSERT_EFI_ERROR (Status);
+    EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
   }
 
   FreePool (FilePath);
@@ -914,10 +917,8 @@ BdsEntry (
   // Execute Driver Options
   //
   LoadOptions = EfiBootManagerGetLoadOptions (&LoadOptionCount, LoadOptionTypeDriver);
-  if (LoadOptions != NULL) {
-    ProcessLoadOptions (LoadOptions, LoadOptionCount);
-    EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
-  }
+  ProcessLoadOptions (LoadOptions, LoadOptionCount);
+  EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
 
   //
   // Connect consoles
@@ -1052,10 +1053,8 @@ BdsEntry (
     // Execute SysPrep####
     //
     LoadOptions = EfiBootManagerGetLoadOptions (&LoadOptionCount, LoadOptionTypeSysPrep);
-    if (LoadOptions != NULL) {
-      ProcessLoadOptions (LoadOptions, LoadOptionCount);
-      EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
-    }
+    ProcessLoadOptions (LoadOptions, LoadOptionCount);
+    EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
 
     //
     // Execute Key####
@@ -1109,16 +1108,12 @@ BdsEntry (
 
     do {
       //
-      // Retry to boot if any of the boot succeeds.
-      // If infinite retries is enabled, always retry. This allows a continuous loop over all boot options.
+      // Retry to boot if any of the boot succeeds
       //
-      BootSuccess = FALSE;
       LoadOptions = EfiBootManagerGetLoadOptions (&LoadOptionCount, LoadOptionTypeBoot);
-      if (LoadOptions != NULL) {
-        BootSuccess = BootBootOptions (LoadOptions, LoadOptionCount, (BootManagerMenuStatus != EFI_NOT_FOUND) ? &BootManagerMenu : NULL);
-        EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
-      }
-    } while (BootSuccess || PcdGetBool (PcdSupportInfiniteBootRetries));
+      BootSuccess = BootBootOptions (LoadOptions, LoadOptionCount, (BootManagerMenuStatus != EFI_NOT_FOUND) ? &BootManagerMenu : NULL);
+      EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
+    } while (BootSuccess || PcdGetBool (PcdSupportInfiniteBootRetries)); // MU_CHANGE add PcdSupportInfiniteBootRetries support
   }
 
   if (BootManagerMenuStatus != EFI_NOT_FOUND) {
@@ -1128,10 +1123,8 @@ BdsEntry (
   if (!BootSuccess) {
     if (PcdGetBool (PcdPlatformRecoverySupport)) {
       LoadOptions = EfiBootManagerGetLoadOptions (&LoadOptionCount, LoadOptionTypePlatformRecovery);
-      if (LoadOptions != NULL) {
-        ProcessLoadOptions (LoadOptions, LoadOptionCount);
-        EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
-      }
+      ProcessLoadOptions (LoadOptions, LoadOptionCount);
+      EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
     } else if (PlatformDefaultBootOptionValid) {
       //
       // When platform recovery is not enabled, still boot to platform default file path.
