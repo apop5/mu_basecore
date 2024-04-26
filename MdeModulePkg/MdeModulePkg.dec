@@ -853,6 +853,11 @@
   ## Include/Protocol/CxlIo.h
   gEdkiiCxlIoProtocolGuid = { 0x8FAC60B2, 0xBBC1, 0x41DE, {0xA7, 0x97, 0x98, 0x75, 0xCD, 0xD3, 0xA8, 0xF8 } }
 
+  ## MU_CHANGE START: Add protocol to indicate the GCD sync has completed
+  ## Include/Protocol/Cpu.h
+  gEdkiiGcdSyncCompleteProtocolGuid = { 0x650B7F40, 0x6564, 0x4FA9, { 0x93, 0x75, 0xCD, 0x6B, 0x52, 0x1B, 0x6E, 0x50 }}
+  ## MU_CHANGE END
+
 [PcdsFeatureFlag]
   ## Indicates if the platform can support update capsule across a system reset.<BR><BR>
   #   TRUE  - Supports update capsule across a system reset.<BR>
