@@ -1,4 +1,13 @@
-# Defines the mappings between GitHub issue responses and labels applied to the issue.
+# Defines the mappings between GitHub issue responses and labels applied to the issue
+# for Project Mu repos.
+#
+# IMPORTANT: Only use labels defined in the .github/Labels.yml file in this repo.
+#
+# NOTE: This file is automatically synchronized from Mu DevOps. Update the original file there
+#       instead of the file in this repo.
+#
+# - Mu DevOps Repo: https://github.com/microsoft/mu_devops
+# - File Sync Settings: https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml
 #
 # Copyright (c) Microsoft Corporation.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -13,11 +22,11 @@ policy:
     - id: ['urgency']
       block-list: []
       label:
-        - name: 'priority:low'
+        - name: 'urgency:low'
           keys: ['Low']
-        - name: 'priority:medium'
+        - name: 'urgency:medium'
           keys: ['Medium']
-        - name: 'priority:high'
+        - name: 'urgency:high'
           keys: ['High']
 
     # Issue Template - Fix Owner Dropdown
@@ -43,6 +52,7 @@ policy:
       label:
         - name: 'state:needs-maintainer-feedback'
           keys: ['Maintainer feedback requested']
+<<<<<<< HEAD
 
     # Issue Template - Packages Impacted
     - id: ['packages_impacted']
@@ -106,3 +116,5 @@ policy:
           keys: ['UnitTestFrameworkPkg']
         - name: 'package:other'
           keys: ['Other']
+=======
+>>>>>>> d4d2ac9173 (BaseCore: Enable CI)

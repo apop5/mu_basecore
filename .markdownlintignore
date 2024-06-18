@@ -1,6 +1,15 @@
+<<<<<<< HEAD
 # Ignore build directory
 /Build/
 
 # Ignore external dependencies
 *_extdep/
 UnitTestFrameworkPkg/Library/SubhookLib/
+=======
+# Ignore build directory
+/Build/
+
+# Ignore external dependencies
+*_extdep/
+UnitTestFrameworkPkg/Library/SubhookLib/
+>>>>>>> d4d2ac9173 (BaseCore: Enable CI)

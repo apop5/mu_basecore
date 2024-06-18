@@ -1180,6 +1180,7 @@
         "xgetbv",
         "XIPFLAGS",
         "xmlef",
+<<<<<<< HEAD
         "xpress",
         "xrstor",
         "xrstors",
@@ -1198,5 +1199,10 @@
         "zentrum",
         "zhongsihang",
         "zicbom",
+=======
+        "yesno",
+        "MU_CHANGE",        # MU_CHANGE for MU_CHANGE
+        "markdownlint",     # MU_CHANGE for markdownlint
+>>>>>>> d4d2ac9173 (BaseCore: Enable CI)
     ]
 }
