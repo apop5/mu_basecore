@@ -118,7 +118,10 @@
             "corthon",      # Contact GitHub account in Readme
             "mdkinney",     # Contact GitHub account in Readme
             "spbrogan",     # Contact GitHub account in Readme
-            "uintn"
+            "pycobertura",  # tool for code coverage
+            "loongarch",
+                "loongson",
+                "uintn"
         ],
         "IgnoreStandardPaths": [],   # Standard Plugin defined paths that should be ignore
         "AdditionalIncludePaths": [] # Additional paths to spell check (wildcards supported)

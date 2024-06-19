@@ -112,6 +112,10 @@
         "AcceptableDependencies-HOST_APPLICATION":[
             "UnitTestFrameworkPkg/UnitTestFrameworkPkg.dec"
         ],
+        # For UEFI shell based apps
+        "AcceptableDependencies-UEFI_APPLICATION":[
+            "UnitTestFrameworkPkg/UnitTestFrameworkPkg.dec" # TCBZ3519 MU_CHANGE
+        ],
         "IgnoreInf": []
     },
 
