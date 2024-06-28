@@ -553,7 +553,10 @@ UnsetGuardPage (
   // memory.
   //
   Attributes = 0;
-  if ((PcdGet64 (PcdDxeNxMemoryProtectionPolicy) & (1 << EfiConventionalMemory)) != 0) {
+  // MU_CHANGE START Update to use memory protection settings HOB
+  // if ((PcdGet64 (PcdDxeNxMemoryProtectionPolicy) & (1 << EfiConventionalMemory)) != 0) {
+  if (gDxeMps.NxProtectionPolicy.Fields.EfiConventionalMemory) {
+    // MU_CHANGE END
     Attributes |= EFI_MEMORY_XP;
   }
 
@@ -571,6 +574,8 @@ UnsetGuardPage (
   ASSERT_EFI_ERROR (Status);
   mOnGuarding = FALSE;
 }
+
+// MU_CHANGE START Update to use memory protection settings HOB
 
 /**
   Check to see if the memory at the given address should be guarded or not.
@@ -590,39 +595,49 @@ IsMemoryTypeToGuard (
   IN UINT8              PageOrPool
   )
 {
-  UINT64  TestBit;
-  UINT64  ConfigBit;
+  // UINT64 TestBit;
+  // UINT64 ConfigBit;
 
   if (AllocateType == AllocateAddress) {
     return FALSE;
   }
 
-  if ((PcdGet8 (PcdHeapGuardPropertyMask) & PageOrPool) == 0) {
-    return FALSE;
+  // if ((PcdGet8 (PcdHeapGuardPropertyMask) & PageOrPool) == 0) {
+  //   return FALSE;
+  // }
+
+  // if (PageOrPool == GUARD_HEAP_TYPE_POOL) {
+  //   ConfigBit = PcdGet64 (PcdHeapGuardPoolType);
+  // } else if (PageOrPool == GUARD_HEAP_TYPE_PAGE) {
+  //   ConfigBit = PcdGet64 (PcdHeapGuardPageType);
+  // } else {
+  //   ConfigBit = (UINT64)-1;
+  // }
+
+  //   if ((UINT32)MemoryType >= MEMORY_TYPE_OS_RESERVED_MIN) {
+  //     TestBit = BIT63;
+  //   } else if ((UINT32) MemoryType >= MEMORY_TYPE_OEM_RESERVED_MIN) {
+  //     TestBit = BIT62;
+  //   } else if (MemoryType < EfiMaxMemoryType) {
+  //     TestBit = LShiftU64 (1, MemoryType);
+  //   } else if (MemoryType == EfiMaxMemoryType) {
+  //     TestBit = (UINT64)-1;
+  //   } else {
+  //     TestBit = 0;
+  //   }
+
+  //   return ((ConfigBit & TestBit) != 0);
+
+  if ((PageOrPool == GUARD_HEAP_TYPE_POOL) && gDxeMps.HeapGuardPolicy.Fields.UefiPoolGuard) {
+    return GetDxeMemoryTypeSettingFromBitfield (MemoryType, gDxeMps.HeapGuardPoolType);
+  } else if ((PageOrPool == GUARD_HEAP_TYPE_PAGE) && gDxeMps.HeapGuardPolicy.Fields.UefiPageGuard) {
+    return GetDxeMemoryTypeSettingFromBitfield (MemoryType, gDxeMps.HeapGuardPageType);
   }
 
-  if (PageOrPool == GUARD_HEAP_TYPE_POOL) {
-    ConfigBit = PcdGet64 (PcdHeapGuardPoolType);
-  } else if (PageOrPool == GUARD_HEAP_TYPE_PAGE) {
-    ConfigBit = PcdGet64 (PcdHeapGuardPageType);
-  } else {
-    ConfigBit = (UINT64)-1;
-  }
-
-  if ((UINT32)MemoryType >= MEMORY_TYPE_OS_RESERVED_MIN) {
-    TestBit = BIT63;
-  } else if ((UINT32)MemoryType >= MEMORY_TYPE_OEM_RESERVED_MIN) {
-    TestBit = BIT62;
-  } else if (MemoryType < EfiMaxMemoryType) {
-    TestBit = LShiftU64 (1, MemoryType);
-  } else if (MemoryType == EfiMaxMemoryType) {
-    TestBit = (UINT64)-1;
-  } else {
-    TestBit = 0;
-  }
-
-  return ((ConfigBit & TestBit) != 0);
+  return FALSE;
 }
+
+// MU_CHANGE END
 
 /**
   Check to see if the pool at the given address should be guarded or not.
@@ -675,7 +690,17 @@ IsHeapGuardEnabled (
   UINT8  GuardType
   )
 {
-  return IsMemoryTypeToGuard (EfiMaxMemoryType, AllocateAnyPages, GuardType);
+  // MU_CHANGE START Update to work with memory protection settings HOB
+  if ((GuardType & GUARD_HEAP_TYPE_PAGE && gDxeMps.HeapGuardPolicy.Fields.UefiPageGuard) ||
+      (GuardType & GUARD_HEAP_TYPE_POOL && gDxeMps.HeapGuardPolicy.Fields.UefiPoolGuard) ||
+      (GuardType & GUARD_HEAP_TYPE_FREED && gDxeMps.HeapGuardPolicy.Fields.UefiFreedMemoryGuard))
+  {
+    return TRUE;
+  }
+
+  return FALSE;
+  // return IsMemoryTypeToGuard (EfiMaxMemoryType, AllocateAnyPages, GuardType);
+  // MU_CHANGE END
 }
 
 /**
@@ -814,91 +839,61 @@ UnsetGuardForMemory (
   memory blocks, and try to use it as the Guard page of the memory to be
   allocated.
 
-  A guard page is not allowed to be placed at page 0 because it may be used for
-  NULL pointer detection or have special meaning if it is left mapped. This API
-  will reject the memory block if the only available place for the head guard is
-  page 0.
-
-  @param[in,out]  Start           Start address of the free memory block. On successful return, this will contain the
-                                  adjusted start address of the proposed allocation.
-  @param[in]      Size            Size of free memory block.
-  @param[in,out]  SizeRequested   Size of memory to allocate. On successful return, this will contain the adjusted size
-                                  of memory to allocate.
+  @param[in]  Start           Start address of free memory block.
+  @param[in]  Size            Size of free memory block.
+  @param[in]  SizeRequested   Size of memory to allocate.
 
   @return The end address of memory block found.
   @return 0 if no enough space for the required size of memory and its Guard.
 **/
 UINT64
 AdjustMemoryS (
-  IN OUT UINT64  *Start,
-  IN UINT64      Size,
-  IN OUT UINT64  *SizeRequested
+  IN UINT64  Start,
+  IN UINT64  Size,
+  IN UINT64  SizeRequested
   )
 {
-  UINT64   Target;
-  BOOLEAN  HasHeadGuard;
-  UINT64   OriginalSizeRequested;
-  UINT64   OriginalStart;
-
-  HasHeadGuard = TRUE;
-
-  if ((Start == NULL) || (SizeRequested == NULL) || (*SizeRequested == 0) || (Size < *SizeRequested)) {
-    return 0;
-  }
+  UINT64  Target;
 
   //
   // UEFI spec requires that allocated pool must be 8-byte aligned. If it's
   // indicated to put the pool near the Tail Guard, we need extra bytes to
   // make sure alignment of the returned pool address.
   //
-  if ((PcdGet8 (PcdHeapGuardPropertyMask) & BIT7) == 0) {
-    *SizeRequested = ALIGN_VALUE (*SizeRequested, 8);
+  // MU_CHANGE START Update to use memory protection settings HOB
+  // if ((PcdGet8 (PcdHeapGuardPropertyMask) & BIT7) == 0) {
+  if (gDxeMps.HeapGuardPolicy.Fields.Direction == HEAP_GUARD_ALIGNED_TO_TAIL) {
+    // MU_CHANGE END
+    SizeRequested = ALIGN_VALUE (SizeRequested, 8);
   }
 
-  // Take into account the alignment requirement
-  OriginalSizeRequested = *SizeRequested;
-  OriginalStart         = *Start;
-
-  Target = OriginalStart + Size - OriginalSizeRequested;
-  if ((Target <= EFI_PAGE_SIZE) || (Target < OriginalStart)) {
-    // If Target is at page 1 or below, we don't have a shared guard page and can't add a new one,
-    // so reject this memory block. Page 0 is reserved for NULL pointer detection.
-    // Our alignment requirement may have caused Target to be outside of the free memory block,
-    // so reject the block in that case as well.
+  Target = Start + Size - SizeRequested;
+  ASSERT (Target >= Start);
+  if (Target == 0) {
     return 0;
   }
 
-  if (!IsGuardPage (OriginalStart + Size)) {
+  if (!IsGuardPage (Start + Size)) {
     // No Guard at tail to share. One more page is needed.
-    Target         -= EFI_PAGES_TO_SIZE (1);
-    *SizeRequested += EFI_PAGES_TO_SIZE (1);
+    Target -= EFI_PAGES_TO_SIZE (1);
   }
 
   // Out of range?
-  if ((Target < OriginalStart) || (Target <= EFI_PAGE_SIZE)) {
+  if (Target < Start) {
     return 0;
-  }
-
-  // We are done adjusting Target at this point, so set the start of the proposed allocation
-  // to Target
-  *Start = Target;
-
-  // Check if we have a head guard to share. If not, we need one more page for the head Guard.
-  if (!IsGuardPage (Target - EFI_PAGES_TO_SIZE (1))) {
-    HasHeadGuard    = FALSE;
-    *Start         -= EFI_PAGES_TO_SIZE (1);
-    *SizeRequested += EFI_PAGES_TO_SIZE (1);
   }
 
   // At the edge?
-  if ((Target == OriginalStart) && !HasHeadGuard) {
-    // Not enough space for a new head guard page and there isn't one to share
-    return 0;
+  if (Target == Start) {
+    if (!IsGuardPage (Target - EFI_PAGES_TO_SIZE (1))) {
+      // No enough space for a new head Guard if no Guard at head to share.
+      return 0;
+    }
   }
 
   // OK, we have enough pages for memory and its Guards. Return the End of the
   // free space.
-  return Target + OriginalSizeRequested - 1;
+  return Target + SizeRequested - 1;
 }
 
 /**
@@ -1052,7 +1047,10 @@ AdjustPoolHeadA (
   IN UINTN                 Size
   )
 {
-  if ((Memory == 0) || ((PcdGet8 (PcdHeapGuardPropertyMask) & BIT7) != 0)) {
+  // MU_CHANGE START Update to use memory protection settings HOB
+  // if (Memory == 0 || (PcdGet8 (PcdHeapGuardPropertyMask) & BIT7) != 0) {
+  if ((Memory == 0) || (gDxeMps.HeapGuardPolicy.Fields.Direction == HEAP_GUARD_ALIGNED_TO_HEAD)) {
+    // MU_CHANGE END
     //
     // Pool head is put near the head Guard
     //
@@ -1083,7 +1081,10 @@ AdjustPoolHeadF (
   IN UINTN                 Size
   )
 {
-  if ((Memory == 0) || ((PcdGet8 (PcdHeapGuardPropertyMask) & BIT7) != 0)) {
+  // MU_CHANGE START Update to use memory protection settings HOB
+  // if (Memory == 0 || (PcdGet8 (PcdHeapGuardPropertyMask) & BIT7) != 0) {
+  if ((Memory == 0) || (gDxeMps.HeapGuardPolicy.Fields.Direction == HEAP_GUARD_ALIGNED_TO_HEAD)) {
+    // MU_CHANGE END
     //
     // Pool head is put near the head Guard
     //
