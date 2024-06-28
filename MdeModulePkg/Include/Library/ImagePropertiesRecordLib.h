@@ -8,7 +8,8 @@
 
 **/
 
-#pragma once
+#ifndef IMAGE_PROPERTIES_RECORD_SUPPORT_LIB_H_
+#define IMAGE_PROPERTIES_RECORD_SUPPORT_LIB_H_
 
 #define IMAGE_PROPERTIES_RECORD_CODE_SECTION_SIGNATURE  SIGNATURE_32 ('I','P','R','C')
 
@@ -229,3 +230,36 @@ EFIAPI
 DeleteImagePropertiesRecord (
   IN  IMAGE_PROPERTIES_RECORD  *ImageRecord
   );
+
+/**
+  Converts a number of pages to a size in bytes.
+
+  NOTE: Do not use EFI_PAGES_TO_SIZE because it handles UINTN only.
+
+  @param[in]  Pages     The number of EFI_PAGES.
+
+  @retval  The number of bytes associated with the input number of pages.
+**/
+UINT64
+EFIAPI
+EfiPagesToSize (
+  IN UINT64  Pages
+  );
+
+/**
+  Converts a size, in bytes, to a number of EFI_PAGESs.
+
+  NOTE: Do not use EFI_SIZE_TO_PAGES because it handles UINTN only.
+
+  @param[in]  Size      A size in bytes.
+
+  @retval  The number of pages associated with the input number of bytes.
+
+**/
+UINT64
+EFIAPI
+EfiSizeToPages (
+  IN UINT64  Size
+  );
+
+#endif
