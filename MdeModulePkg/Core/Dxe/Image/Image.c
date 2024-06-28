@@ -667,7 +667,7 @@ CoreLoadPeImage (
       return Status;
     }
 
-    TurnOffNxCompatibility ();
+    ActivateCompatibilityMode ();
   }
 
   // MU_CHANGE END
