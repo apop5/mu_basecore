@@ -2660,8 +2660,13 @@ BmRegisterBootManagerMenu (
     ASSERT (EfiBootManagerFindLoadOption (BootOption, BootOptions, BootOptionCount) == -1);
     EfiBootManagerFreeLoadOptions (BootOptions, BootOptionCount);
     );
+  // MU_CHANGE - Add Platform Specific actions
+  if (!EFI_ERROR (Status) && (PcdGetBool (PcdBootManagerInBootOrder))) {
+    Status = EfiBootManagerAddLoadOptionVariable (BootOption, (UINTN)-1);
+  }
 
-  return EfiBootManagerAddLoadOptionVariable (BootOption, (UINTN)-1);
+  return Status;
+  // MU_CHANGE - Add Platform Specific action
 }
 
 /**
