@@ -18,6 +18,8 @@ import edk2toollib.windows.locate_tools as locate_tools
 from edk2toolext.environment import shell_environment
 from edk2toollib.utility_functions import RunCmd
 from edk2toollib.utility_functions import GetHostInfo
+from edk2toollib.database import Edk2DB  # MU_CHANGE - reformat coverage data
+from edk2toollib.database.tables import EnvironmentTable, SourceTable, PackageTable, InfTable  # MU_CHANGE - reformat coverage data
 from textwrap import dedent
 
 
@@ -156,6 +158,15 @@ class HostBasedUnitTestRunner(IUefiBuildPlugin):
                         failure_count += 1
                 else:
                     logging.info("Skipping code coverage. Currently, support GCC, CLANG, and MSVC compiler.")
+                    return failure_count # MU_CHANGE - reformat coverage data
+
+                # MU_CHANGE begin - reformat coverage data
+                if thebuilder.env.GetValue("CC_REORGANIZE", "TRUE") == "TRUE":
+                    ret = self.organize_coverage(thebuilder)
+                    if ret != 0:
+                        logging.error("Failed to reorganize coverage data by INF.")
+                        return -1
+                # MU_CHANGE end - reformat coverage data
 
         return failure_count
 
@@ -174,6 +185,9 @@ class HostBasedUnitTestRunner(IUefiBuildPlugin):
 
         buildOutputBase = thebuilder.env.GetValue("BUILD_OUTPUT_BASE")
         workspace = thebuilder.env.GetValue("WORKSPACE")
+        # MU_CHANGE begin - regex string for exclude paths
+        regex_exclude = r"^.*UnitTest\|^.*MU\|^.*Mock\|^.*DEBUG"
+        # MU_CHANGE end - regex string for exclude paths
 
         lcov_version_major = self.get_lcov_version()
         if not lcov_version_major:
@@ -182,13 +196,8 @@ class HostBasedUnitTestRunner(IUefiBuildPlugin):
         logging.info(f"Got lcov version {lcov_version_major}")
 
         # Generate base code coverage for all source files
-        # lcov v2.0+ with gcov requires ignoring several non-fatal error
-        # classes that commonly occur with large vendored third-party trees:
-        #   mismatch - gcov/gcno version or function line mismatches
-        #   source   - source files not found or newer than gcno notes
-        #   format   - unexpected gcov output (e.g. line numbers beyond EOF)
-        #   gcov     - gcov tool returned with a non-zero return code
-        lcov_error_settings = "--ignore-errors mismatch,source,format,gcov" if lcov_version_major >= 2 else ""
+        # `--ignore-errors mismatch` needed to make lcov v2.0+/gcov work.
+        lcov_error_settings = "--ignore-errors mismatch" if lcov_version_major >= 2 else ""
         ret = RunCmd("lcov", f"--no-external --capture --initial --directory {buildOutputBase} --output-file {buildOutputBase}/cov-base.info --rc lcov_branch_coverage=1 {lcov_error_settings}")
         if ret != 0:
             logging.error("UnitTest Coverage: Failed to build initial coverage data.")
@@ -213,7 +222,10 @@ class HostBasedUnitTestRunner(IUefiBuildPlugin):
             return 1
 
         # Filter out auto-generated and test code
-        ret = RunCmd("lcov_cobertura",f"{buildOutputBase}/total-coverage.info --excludes ^.*UnitTest\|^.*MU\|^.*Mock\|^.*DEBUG -o {buildOutputBase}/coverage.xml")
+        # MU_CHANGE begin - reformat coverage data
+        file_out = thebuilder.env.GetValue("CI_PACKAGE_NAME", "") + "_coverage.xml"
+        ret = RunCmd("lcov_cobertura",f"{buildOutputBase}/total-coverage.info --excludes {regex_exclude} -o {buildOutputBase}/{file_out}")
+        # MU_CHANGE end - reformat coverage data
         if ret != 0:
             logging.error("UnitTest Coverage: Failed generate filtered coverage XML.")
             return 1
@@ -229,10 +241,12 @@ class HostBasedUnitTestRunner(IUefiBuildPlugin):
             logging.error("UnitTest Coverage: Failed generate all coverage file.")
             return 1
 
-        # Generate and XML file if requested for all package
+        # Generate and XML file if requested.for all package
         if os.path.isfile(f"{workspace}/Build/coverage.xml"):
             os.remove(f"{workspace}/Build/coverage.xml")
-        ret = RunCmd("lcov_cobertura",f"{workspace}/Build/all-coverage.info --excludes ^.*UnitTest\|^.*MU\|^.*Mock\|^.*DEBUG -o {workspace}/Build/coverage.xml")
+        # MU_CHANGE begin - regex string for exclude paths
+        ret = RunCmd("lcov_cobertura",f"{workspace}/Build/all-coverage.info --excludes {regex_exclude} -o {workspace}/Build/coverage.xml")
+        # MU_CHANGE end - regex string for exclude paths
         if ret != 0:
             logging.error("UnitTest Coverage: Failed generate all coverage XML.")
             return 1
@@ -244,18 +258,13 @@ class HostBasedUnitTestRunner(IUefiBuildPlugin):
         logging.info("Generating UnitTest code coverage")
 
         buildOutputBase = thebuilder.env.GetValue("BUILD_OUTPUT_BASE")
-        workspace = thebuilder.env.GetValue("WORKSPACE")
-
         if GetHostInfo().os.upper() == "LINUX":
             # Collect test executables with no file extension
             testList = glob.glob(os.path.join(buildOutputBase, "**", "*Test*"), recursive=True)
             testList = [f for f in testList if os.path.isfile(f) and os.path.splitext(f)[1] == ""]
-            allTestList = glob.glob(os.path.join(workspace, "Build", "**", "*Test*"), recursive=True)
-            allTestList = [f for f in allTestList if os.path.isfile(f) and os.path.splitext(f)[1] == ""]
         elif GetHostInfo().os.upper() == "WINDOWS":
             # Collect test executables with a .exe file extension
             testList = glob.glob(os.path.join(buildOutputBase, "**","*Test*.exe"), recursive=True)
-            allTestList = glob.glob(os.path.join(workspace, "Build", "**","*Test*.exe"), recursive=True)
         else:
             raise NotImplementedError("Unsupported Operating System")
         if not testList:
@@ -264,99 +273,117 @@ class HostBasedUnitTestRunner(IUefiBuildPlugin):
 
         profrawlistFile = os.path.join(buildOutputBase, 'profrawlist.txt')
         mergedProfData = os.path.join(buildOutputBase, 'merged.profdata')
-        mergedCoverageLcov = os.path.join(buildOutputBase, 'coverage.lcov')
         mergedCoverageXml = os.path.join(buildOutputBase, 'coverage.xml')
 
-        # Generate LCOV and XML file for each unit test executable
-        if self.clang_gen_profdata(buildOutputBase, profrawlistFile, mergedProfData) != 0:
+        with open(profrawlistFile, "w") as f:
+            f.write("\n".join(glob.glob(os.path.join(buildOutputBase, "**", "*.profraw"), recursive=True)))
+        # Generate coverage file
+        ret = RunCmd("llvm-profdata", f"merge -sparse --input-files {profrawlistFile} --output {mergedProfData}")
+        if ret != 0:
+            logging.error("UnitTest Coverage: Failed to merge coverage data.")
             return 1
+        # Generate and LCOV and XML file for each unit test executable
         for testFile in testList:
-            if self.clang_gen_lcov_xml(mergedProfData, [testFile], f"{testFile}.coverage.lcov", f"{testFile}.coverage.xml") != 0:
+            lcovFile = f"{testFile}.lcov"
+            ret = RunCmd("llvm-cov", f"export -format=lcov --instr-profile={mergedProfData} {testFile} > {lcovFile} ")
+            if ret != 0:
+                logging.error("UnitTest Coverage: Failed to generate coverage data for " + testFile)
                 return 1
-
-        # Generate LCOV and XML for the package
-        if self.clang_gen_lcov_xml(mergedProfData, testList, mergedCoverageLcov, mergedCoverageXml) != 0:
-            return 1
-
-        allProfrawlistFile = os.path.join(workspace, 'Build', 'profrawlist.txt')
-        allMergedProfData = os.path.join(workspace, 'Build', 'merged.profdata')
-        allCoverageLcov = os.path.join(workspace, 'Build', 'coverage.lcov')
-        allCoverageXml = os.path.join(workspace, 'Build', 'coverage.xml')
-
-        # Generate LCOV and XML for all packages
-        if self.clang_gen_profdata(workspace, allProfrawlistFile, allMergedProfData) != 0:
-            return 1
-        if self.clang_gen_lcov_xml(allMergedProfData, allTestList, allCoverageLcov, allCoverageXml) != 0:
-            return 1
-
-        return 0
-
-    def clang_gen_profdata(self, basepath, output_profrawlistfile, output_profdata):
-        """
-        Merge multiple LLVM profraw files into a single profdata file.
-        """
-        if not os.path.isdir(basepath):
-            logging.error(f"clang_gen_profdata: Base path {basepath} is not a directory.")
-            return 1
-        if not output_profrawlistfile:
-            logging.error("clang_gen_profdata: No profraw list file provided.")
-            return 1
-        if not output_profdata:
-            logging.error("clang_gen_profdata: No output profdata file provided.")
-            return 1
-
-        for file in [output_profrawlistfile, output_profdata]:
-            if os.path.isfile(file):
-                os.remove(file)
-
-        with open(output_profrawlistfile, "w") as f:
-            f.write("\n".join(glob.glob(os.path.join(basepath, "**", "*.profraw"), recursive=True)))
-        ret = RunCmd("llvm-profdata", f"merge -sparse --input-files {output_profrawlistfile} --output {output_profdata}")
+            coveragexmlFile = f"{testFile}.coverage.xml"
+            ret = RunCmd("lcov_cobertura",f"{lcovFile} -o {coveragexmlFile}")
+            if ret != 0:
+                logging.error("UnitTest Coverage: Failed generate filtered coverage XML.")
+                return 1
+        # Merge all XML files
+        ret = self.merge_cobertura_xml_files([f"{testFile}.coverage.xml" for testFile in testList], mergedCoverageXml)
         if ret != 0:
-            logging.error(f"clang_gen_profdata: Failed to merge coverage data for {basepath}.")
+            logging.error("UnitTest Coverage: Failed to merge coverage XML files.")
             return 1
         return 0
 
-    def clang_gen_lcov_xml(self, profdata, testfiles, output_lcov, output_xml):
+    def merge_cobertura_xml_files(self, xml_file_list, output_file):
         """
-        Generate lcov coverage data from LLVM profdata and test files.
+        Merge multiple Cobertura XML files into a single output file.
+
+        Args:
+            xml_file_list (list): List of Cobertura XML file paths to merge.
+            output_file (str): Path to the merged output XML file.
         """
-        if not profdata or not os.path.isfile(profdata):
-            logging.error(f"clang_gen_lcov_xml: Invalid profdata file provided. {profdata}")
-            return 1
-        if not testfiles:
-            logging.error("clang_gen_lcov_xml: No test files provided.")
-            return 1
-        if not output_lcov:
-            logging.error("clang_gen_lcov_xml: No output lcov file provided.")
-            return 1
-        if not output_xml:
-            logging.error("clang_gen_lcov_xml: No output xml file provided.")
+        if not xml_file_list:
+            logging.warning("No Cobertura XML files provided for merging.")
             return 1
 
-        for file in [output_lcov, output_xml]:
-            if os.path.isfile(file):
-                os.remove(file)
+        try:
+            # Parse the first file as the base
+            base_tree = xml.etree.ElementTree.parse(xml_file_list[0])
+            base_root = base_tree.getroot()
+            base_packages = base_root.find("packages")
+            if base_packages is None:
+                base_packages = xml.etree.ElementTree.SubElement(base_root, "packages")
 
-        resp_file = output_lcov + ".rsp"
-        with open(resp_file, "w") as f:
-            f.write('\n-object\n'.join(testfiles))
+            # Merge the rest
+            for xml_file in xml_file_list[1:]:
+                tree = xml.etree.ElementTree.parse(xml_file)
+                root = tree.getroot()
+                packages = root.find("packages")
+                if packages is not None:
+                    for package in packages.findall("package"):
+                        base_packages.append(package)
 
-        # llvm-cov supports response file with '@' to pass list of object files.
-        # Use response file to avoid command line length limit.
-        ret = RunCmd("llvm-cov", f"export -format=lcov --instr-profile={profdata} @{resp_file} > {output_lcov}")
-        if ret != 0:
-            logging.error(f"clang_gen_lcov_xml: Failed to generate coverage lcov. {output_lcov}")
+            # Recalculate line-rate and branch-rate for the merged XML
+            lines_covered = 0
+            lines_valid = 0
+            branches_covered = 0
+            branches_valid = 0
+
+            def parse_condition_coverage(cond_cov: str) -> int:
+                """
+                Parse a condition-coverage string like '50% (1/2)'.
+                Returns the number of covered branches.
+                """
+                try:
+                    inside_parens = cond_cov.split("(", 1)[1].split(")", 1)[0]
+                    covered, total = map(int, inside_parens.split("/"))
+                    return covered
+                except Exception:
+                    return 0
+
+            for package in base_packages.findall("package"):
+                for packageclass in package.findall("classes/class"):
+                    lines = packageclass.find("lines")
+                    if lines is None:
+                        continue
+                    for line in lines.findall("line"):
+                        lines_valid += 1
+                        # line coverage
+                        if "hits" in line.attrib and int(line.attrib["hits"]) > 0:
+                            lines_covered += 1
+                        # branch coverage
+                        if "branch" in line.attrib and line.attrib["branch"] == "true":
+                            branches_valid += 1
+                        if "condition-coverage" in line.attrib:
+                            # Example: "50% (1/2)"
+                            branches_covered += parse_condition_coverage(
+                                                  line.attrib["condition-coverage"]
+                                                  )
+
+            def safe_rate(covered, valid):
+                return float(covered) / float(valid) if valid else 0.0
+
+            base_root.set("lines-covered", str(lines_covered))
+            base_root.set("lines-valid", str(lines_valid))
+            base_root.set("line-rate", str(safe_rate(lines_covered, lines_valid)))
+            base_root.set("branches-covered", str(branches_covered))
+            base_root.set("branches-valid", str(branches_valid))
+            base_root.set("branch-rate", str(safe_rate(branches_covered, branches_valid)))
+
+            # Write merged XML
+            base_tree.write(output_file, encoding="utf-8", xml_declaration=True)
+            logging.info(f"Merged Cobertura XML written to {output_file}")
+            return 0
+        except Exception as e:
+            logging.error(f"Failed to merge Cobertura XML files: {e}")
             return 1
-        ret = RunCmd("lcov_cobertura",f'{output_lcov} --excludes "^.*UnitTest\|^.*MU\|^.*Mock\|^.*DEBUG" -o {output_xml}')
-        if ret != 0:
-            logging.error(f"clang_gen_lcov_xml: Failed generate filtered coverage XML. {output_xml}")
-            return 1
-
-        if os.path.isfile(resp_file):
-            os.remove(resp_file)
-
-        return 0
 
     def gen_code_coverage_msvc(self, thebuilder):
         logging.info("Generating UnitTest code coverage")
@@ -368,64 +395,74 @@ class HostBasedUnitTestRunner(IUefiBuildPlugin):
         workspace = (workspace + os.sep) if workspace[-1] != os.sep else workspace
         workspaceBuild = os.path.join(workspace, 'Build')
         # Generate coverage file
-        coverageFile = ""
-        for testFile in testList:
-            ret = RunCmd("OpenCppCoverage", f"--source {workspace} --export_type binary:{testFile}.cov -- {testFile}", workingdir=f"{workspace}Build/")
-            if ret != 0:
-                logging.error("UnitTest Coverage: Failed to collect coverage data.")
-                return 1
+        # MU_CHANGE begin - reformat coverage data
+        pkg_cfg_file = os.path.join(buildOutputBase, "pkg-opencppcoverage.cfg")
+        if os.path.isfile(pkg_cfg_file):
+            os.remove(pkg_cfg_file)
 
-            coverageFile  = f" --input_coverage={testFile}.cov"
-            totalCoverageFile = os.path.join(buildOutputBase, 'coverage.cov')
-            if os.path.isfile(totalCoverageFile):
-                coverageFile += f" --input_coverage={totalCoverageFile}"
-            ret = RunCmd(
-                "OpenCppCoverage",
-                f"--export_type binary:{totalCoverageFile} " +
-                f"--working_dir={workspaceBuild} " +
-                f"{coverageFile}"
-                )
-            if ret != 0:
-                logging.error("UnitTest Coverage: Failed to collect coverage data.")
-                return 1
+        with open(pkg_cfg_file, "w") as f:
+            for testFile in testList:
+                ret = RunCmd("OpenCppCoverage", f"--source {workspace} --export_type binary:{testFile}.cov -- {testFile}", workingdir=f"{workspace}Build/")
+                f.write(f"input_coverage={testFile}.cov\n")
+                if ret != 0:
+                    logging.error("UnitTest Coverage: Failed to collect coverage data.")
+                    return 1
 
-        # Generate XML file if requested by each package
-        ret = RunCmd(
-            "OpenCppCoverage",
-            f"--export_type cobertura:{os.path.join(buildOutputBase, 'coverage.xml')} " +
-            f"--working_dir={workspaceBuild} " +
-            f"--input_coverage={totalCoverageFile} "
-            )
+        # Generate and XML file if requested.by each package
+
+        file_out = thebuilder.env.GetValue("CI_PACKAGE_NAME", "") + "_coverage.xml"
+        ret = RunCmd("OpenCppCoverage", f"--export_type cobertura:{os.path.join(buildOutputBase, file_out)} --config_file={pkg_cfg_file}", workingdir=f"{workspace}Build/")
+        os.remove(pkg_cfg_file)
+
         if ret != 0:
             logging.error("UnitTest Coverage: Failed to generate cobertura format xml in single package.")
             return 1
 
         # Generate total report XML file for all package
-        testCoverageList = glob.glob(os.path.join(workspace, "Build", "**", "*Test*.exe.cov"), recursive=True)
-        coverageFile = ""
-        totalCoverageFile = os.path.join(workspaceBuild, 'coverage.cov')
-        for testCoverage in testCoverageList:
-            coverageFile  = f" --input_coverage={testCoverage}"
-            if os.path.isfile(totalCoverageFile):
-                coverageFile += f" --input_coverage={totalCoverageFile}"
-            ret = RunCmd(
-                "OpenCppCoverage",
-                f"--export_type binary:{totalCoverageFile} " +
-                f"--working_dir={workspaceBuild} " +
-                f"{coverageFile}"
-                )
-            if ret != 0:
-                logging.error("UnitTest Coverage: Failed to collect coverage data.")
-                return 1
+        testCoverageList = glob.glob(os.path.join(workspace, "Build", "**","*Test*.exe.cov"), recursive=True)
+        total_cfg_file = os.path.join(buildOutputBase, "total-opencppcoverage.cfg")
+        if os.path.isfile(total_cfg_file):
+            os.remove(total_cfg_file)
 
-        ret = RunCmd(
-            "OpenCppCoverage",
-            f"--export_type cobertura:{os.path.join(workspaceBuild, 'coverage.xml')} " +
-            f"--working_dir={workspaceBuild} " +
-            f"--input_coverage={totalCoverageFile}"
-            )
+        with open(total_cfg_file, "w") as f:
+            for testCoverage in testCoverageList:
+                f.write(f"input_coverage={testCoverage}\n")
+
+        ret = RunCmd("OpenCppCoverage", f"--export_type cobertura:{workspace}Build/coverage.xml --config_file={total_cfg_file}", workingdir=f"{workspace}Build/")
+        os.remove(total_cfg_file)
+
         if ret != 0:
             logging.error("UnitTest Coverage: Failed to generate cobertura format xml.")
             return 1
 
         return 0
+
+    def organize_coverage(self, thebuilder) -> int:
+        """Organize the generated coverage file by INF."""
+        db_path = self.parse_workspace(thebuilder)
+
+        workspace = thebuilder.env.GetValue("WORKSPACE")
+        buildOutputBase = thebuilder.env.GetValue("BUILD_OUTPUT_BASE")
+        package = thebuilder.env.GetValue("CI_PACKAGE_NAME", "")
+        file_out = package + "_coverage.xml"
+        cov_file = os.path.join(buildOutputBase, file_out)
+        exclude = thebuilder.env.GetValue("CC_EXCLUDE", "*NULL*,*Null*,*null*")
+
+        params = f"--database {db_path} coverage {cov_file} -o {cov_file} --by-package -ws {workspace}"
+
+        params += f" -p {package}" * int(package != "")
+        params += " --full" * int(thebuilder.env.GetValue("CC_FULL", "FALSE") == "TRUE")
+        params += " --flatten" * int(thebuilder.env.GetValue("CC_FLATTEN", "FALSE") == "TRUE")
+        params += f" --exclude {exclude}" * int(exclude != "")
+        return RunCmd("stuart_report", params)
+
+    def parse_workspace(self, thebuilder) -> str:
+        """Parses the workspace with Edk2DB with the tables necessarty to run stuart_report."""
+        db_path = os.path.join(thebuilder.env.GetValue("BUILD_OUTPUT_BASE"), "DATABASE.db")
+        db = Edk2DB(db_path, thebuilder.edk2path)
+        db.register(EnvironmentTable(), SourceTable(), PackageTable(), InfTable())
+        env_dict = thebuilder.env.GetAllBuildKeyValues() | thebuilder.env.GetAllNonBuildKeyValues()
+        db.parse(env_dict)
+
+        return db_path
+    # MU_CHANGE end - reformat coverage data
