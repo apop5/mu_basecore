@@ -68,6 +68,9 @@ BdsDxeOnConnectConInCallBack (
 {
   EFI_STATUS  Status;
 
+  // Inform platform of duties to perform before connecting consoles.   // MU_CHANGE
+  PlatformBootManagerOnDemandConInConnect ();                           // MU_CHANGE
+
   //
   // When Osloader call ReadKeyStroke to signal this event
   // no driver dependency is assumed existing. So use a non-dispatch version
@@ -388,6 +391,7 @@ BootBootOptions (
   //
   // Attempt boot each boot option
   //
+
   for (Index = 0; Index < BootOptionCount; Index++) {
     //
     // According to EFI Specification, if a load option is not marked
@@ -413,11 +417,26 @@ BootBootOptions (
     //
     EfiBootManagerBoot (&BootOptions[Index]);
 
-    //
-    // If infinite retries is enabled, do not break out of the loop.
-    // This allows all boot options to be attempted on each iteration.
-    //
+    PlatformBootManagerProcessBootCompletion (&BootOptions[Index]);        // MU_CHANGE 00076 - record boot status
+
+    // MU_CHANGE [BEGIN] - Support infinite boot retries
+    //  Changes for PcdSupportInfiniteBootRetries are meant to minimize upkeep in mu repos.
+    //   If/when upstreaming this change, refactoring calling loop in BdsEntry() would be
+    //   better location.
     if (!PcdGetBool (PcdSupportInfiniteBootRetries)) {
+      // MU_CHANGE [END] - Support infinite boot retries
+
+      //
+      // If the boot via Boot#### returns with a status of EFI_SUCCESS, platform firmware
+      // supports boot manager menu, and if firmware is configured to boot in an
+      // interactive mode, the boot manager will stop processing the BootOrder variable and
+      // present a boot manager menu to the user.
+      //
+      if ((BootManagerMenu != NULL) && (BootOptions[Index].Status == EFI_SUCCESS)) {
+        EfiBootManagerBoot (BootManagerMenu);
+        break;
+      }
+
       //
       // If the boot via Boot#### returns with a status of EFI_SUCCESS, platform firmware
       // supports boot manager menu, and if firmware is configured to boot in an
@@ -429,6 +448,8 @@ BootBootOptions (
         break;
       }
     }
+
+    // MU_CHANGE [END]- Support infinite boot retries
   }
 
   return (BOOLEAN)(Index < BootOptionCount);
@@ -713,6 +734,7 @@ BdsEntry (
   PERF_CROSSMODULE_END ("DXE");
   PERF_CROSSMODULE_BEGIN ("BDS");
   DEBUG ((DEBUG_INFO, "[Bds] Entry...\n"));
+  PlatformBootManagerBdsEntry ();             // MU_CHANGE 00076 - Signal start of BDS
 
   //
   // Fill in FirmwareVendor and FirmwareRevision from PCDs
@@ -838,31 +860,24 @@ BdsEntry (
   // file path for removable media if the platform supports Platform Recovery.
   //
   if (PlatformDefaultBootOptionValid && PcdGetBool (PcdPlatformRecoverySupport)) {
-    //
-    // Get the current PlatformRecovery options. Check if the platform recovery already exists, or
-    // find the next unused platform recovery option number so it can be created
-    //
-    Index       = 0;
     LoadOptions = EfiBootManagerGetLoadOptions (&LoadOptionCount, LoadOptionTypePlatformRecovery);
-    if (LoadOptions != NULL) {
-      if (EfiBootManagerFindLoadOption (&PlatformDefaultBootOption, LoadOptions, LoadOptionCount) == -1) {
-        for ( ; Index < LoadOptionCount; Index++) {
-          //
-          // The PlatformRecovery#### options are sorted by OptionNumber.
-          // Find the the smallest unused number as the new OptionNumber.
-          //
-          if (LoadOptions[Index].OptionNumber != Index) {
-            break;
-          }
+    if (EfiBootManagerFindLoadOption (&PlatformDefaultBootOption, LoadOptions, LoadOptionCount) == -1) {
+      for (Index = 0; Index < LoadOptionCount; Index++) {
+        //
+        // The PlatformRecovery#### options are sorted by OptionNumber.
+        // Find the the smallest unused number as the new OptionNumber.
+        //
+        if (LoadOptions[Index].OptionNumber != Index) {
+          break;
         }
       }
 
-      EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
+      PlatformDefaultBootOption.OptionNumber = Index;
+      Status                                 = EfiBootManagerLoadOptionToVariable (&PlatformDefaultBootOption);
+      ASSERT_EFI_ERROR (Status);
     }
 
-    PlatformDefaultBootOption.OptionNumber = Index;
-    Status                                 = EfiBootManagerLoadOptionToVariable (&PlatformDefaultBootOption);
-    ASSERT_EFI_ERROR (Status);
+    EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
   }
 
   FreePool (FilePath);
@@ -914,10 +929,8 @@ BdsEntry (
   // Execute Driver Options
   //
   LoadOptions = EfiBootManagerGetLoadOptions (&LoadOptionCount, LoadOptionTypeDriver);
-  if (LoadOptions != NULL) {
-    ProcessLoadOptions (LoadOptions, LoadOptionCount);
-    EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
-  }
+  ProcessLoadOptions (LoadOptions, LoadOptionCount);
+  EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
 
   //
   // Connect consoles
@@ -1052,10 +1065,8 @@ BdsEntry (
     // Execute SysPrep####
     //
     LoadOptions = EfiBootManagerGetLoadOptions (&LoadOptionCount, LoadOptionTypeSysPrep);
-    if (LoadOptions != NULL) {
-      ProcessLoadOptions (LoadOptions, LoadOptionCount);
-      EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
-    }
+    ProcessLoadOptions (LoadOptions, LoadOptionCount);
+    EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
 
     //
     // Execute Key####
@@ -1069,6 +1080,8 @@ BdsEntry (
     BdsReadKeys ();
 
     EfiBootManagerHotkeyBoot ();
+
+    PlatformBootManagerPriorityBoot (&BootNext);          // MU_CHANGE 00076  Check for hard button boot selection
 
     if (BootNext != NULL) {
       //
@@ -1093,6 +1106,7 @@ BdsEntry (
       Status = EfiBootManagerVariableToLoadOption (BootNextVariableName, &LoadOption);
       if (!EFI_ERROR (Status)) {
         EfiBootManagerBoot (&LoadOption);
+        PlatformBootManagerProcessBootCompletion (&LoadOption);        // MU_CHANGE 00076 - record boot status
         EfiBootManagerFreeLoadOption (&LoadOption);
         if ((LoadOption.Status == EFI_SUCCESS) &&
             (BootManagerMenuStatus != EFI_NOT_FOUND) &&
@@ -1109,16 +1123,12 @@ BdsEntry (
 
     do {
       //
-      // Retry to boot if any of the boot succeeds.
-      // If infinite retries is enabled, always retry. This allows a continuous loop over all boot options.
+      // Retry to boot if any of the boot succeeds
       //
-      BootSuccess = FALSE;
       LoadOptions = EfiBootManagerGetLoadOptions (&LoadOptionCount, LoadOptionTypeBoot);
-      if (LoadOptions != NULL) {
-        BootSuccess = BootBootOptions (LoadOptions, LoadOptionCount, (BootManagerMenuStatus != EFI_NOT_FOUND) ? &BootManagerMenu : NULL);
-        EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
-      }
-    } while (BootSuccess || PcdGetBool (PcdSupportInfiniteBootRetries));
+      BootSuccess = BootBootOptions (LoadOptions, LoadOptionCount, (BootManagerMenuStatus != EFI_NOT_FOUND) ? &BootManagerMenu : NULL);
+      EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
+    } while (BootSuccess || PcdGetBool (PcdSupportInfiniteBootRetries)); // MU_CHANGE add PcdSupportInfiniteBootRetries support
   }
 
   if (BootManagerMenuStatus != EFI_NOT_FOUND) {
@@ -1128,10 +1138,8 @@ BdsEntry (
   if (!BootSuccess) {
     if (PcdGetBool (PcdPlatformRecoverySupport)) {
       LoadOptions = EfiBootManagerGetLoadOptions (&LoadOptionCount, LoadOptionTypePlatformRecovery);
-      if (LoadOptions != NULL) {
-        ProcessLoadOptions (LoadOptions, LoadOptionCount);
-        EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
-      }
+      ProcessLoadOptions (LoadOptions, LoadOptionCount);
+      EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
     } else if (PlatformDefaultBootOptionValid) {
       //
       // When platform recovery is not enabled, still boot to platform default file path.
@@ -1146,6 +1154,7 @@ BdsEntry (
 
   DEBUG ((DEBUG_ERROR, "[Bds] Unable to boot!\n"));
   PlatformBootManagerUnableToBoot ();
+
   CpuDeadLoop ();
 }
 
