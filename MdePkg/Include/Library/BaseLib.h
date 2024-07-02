@@ -5159,6 +5159,20 @@ LongJump (
   IN      UINTN                     Value
   );
 
+// MU_CHANGE: Start
+
+/**
+  Enables CPU interrupts and then waits for an interrupt to arrive.
+
+**/
+VOID
+EFIAPI
+EnableInterruptsAndSleep (
+  VOID
+  );
+
+// MU_CHANGE: End
+
 /**
   Enables CPU interrupts.
 
