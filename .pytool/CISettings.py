@@ -58,16 +58,10 @@ class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManag
                 "MdeModulePkg",
                 "NetworkPkg",
                 "PcAtChipsetPkg",
-                "PolicyServicePkg",
                 "ShellPkg",
                 "UefiCpuPkg",
                 "StandaloneMmPkg",
-                "UnitTestFrameworkPkg",
-                "ArmPkg",
-                "DynamicTablesPkg",
-                "ArmPlatformPkg",
-                "IntelFsp2Pkg",
-                "IntelFsp2WrapperPkg"
+                "UnitTestFrameworkPkg"
                 )
 
     def GetArchitecturesSupported(self):
@@ -189,8 +183,6 @@ class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManag
             "MdePkg/Library/BaseFdtLib/libfdt", False))
         rs.append(RequiredSubmodule(
             "MdePkg/Library/MipiSysTLib/mipisyst", False))
-        rs.append(RequiredSubmodule(
-            "SecurityPkg/DeviceSecurity/SpdmLib/libspdm", False))
         return rs
 
     def GetName(self):
