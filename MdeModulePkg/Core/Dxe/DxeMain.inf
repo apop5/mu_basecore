@@ -158,6 +158,7 @@
   gEfiSmmBase2ProtocolGuid                      ## SOMETIMES_CONSUMES
   gEdkiiPeCoffImageEmulatorProtocolGuid         ## SOMETIMES_CONSUMES
   gEfiMemoryAttributeProtocolGuid               ## CONSUMES
+  gInternalEventServicesProtocolGuid            ## CONSUMES            ## MU_CHANGE
 
   # Arch Protocols
   gEfiBdsArchProtocolGuid                       ## CONSUMES
@@ -193,6 +194,9 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdCpuStackGuard                           ## CONSUMES
   gEfiMdeModulePkgTokenSpaceGuid.PcdFwVolDxeMaxEncapsulationDepth           ## CONSUMES
   gEfiMdeModulePkgTokenSpaceGuid.PcdImageLargeAddressLoad                   ## CONSUMES
+
+[FeaturePcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdInternalEventServicesEnabled ## CONSUMES ## MU_CHANGE
 
 # [Hob]
 # RESOURCE_DESCRIPTOR   ## CONSUMES
