@@ -51,47 +51,16 @@ class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManag
     def GetPackagesSupported(self):
         ''' return iterable of edk2 packages supported by this build.
         These should be edk2 workspace relative paths '''
-
-<<<<<<< HEAD
-        return ("ArmPkg",
-                "ArmPlatformPkg",
-                "ArmVirtPkg",
-                "DynamicTablesPkg",
-                "EmbeddedPkg",
-                "EmulatorPkg",
-                "IntelFsp2Pkg",
-                "IntelFsp2WrapperPkg",
-                "ManageabilityPkg",
-=======
         return ("BaseTools",    # MU_CHANGE
                 "CryptoPkg",
->>>>>>> d4d2ac9173 (BaseCore: Enable CI)
                 "MdePkg",
                 "MdeModulePkg",
                 "NetworkPkg",
                 "PcAtChipsetPkg",
-<<<<<<< HEAD
-                "SecurityPkg",
-                "UefiCpuPkg",
-                "FmpDevicePkg",
-=======
->>>>>>> d4d2ac9173 (BaseCore: Enable CI)
                 "ShellPkg",
                 "UefiCpuPkg",
                 "StandaloneMmPkg",
-<<<<<<< HEAD
-                "FatPkg",
-                "CryptoPkg",
-                "PrmPkg",
                 "UnitTestFrameworkPkg",
-                "OvmfPkg",
-                "RedfishPkg",
-                "SourceLevelDebugPkg",
-                "UefiPayloadPkg",
-                "TcgTpmPkg"
-=======
-                "UnitTestFrameworkPkg"
->>>>>>> d4d2ac9173 (BaseCore: Enable CI)
                 )
 
     def GetArchitecturesSupported(self):
@@ -192,8 +161,6 @@ class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManag
         '''
         rs = []
         rs.append(RequiredSubmodule(
-            "CryptoPkg/Library/OpensslLib/openssl", False))
-        rs.append(RequiredSubmodule(
             "UnitTestFrameworkPkg/Library/CmockaLib/cmocka", False))
         rs.append(RequiredSubmodule(
             "UnitTestFrameworkPkg/Library/GoogleTestLib/googletest", False))
@@ -212,14 +179,9 @@ class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManag
         rs.append(RequiredSubmodule(
             "MdePkg/Library/MipiSysTLib/mipisyst", False))
         rs.append(RequiredSubmodule(
-            "CryptoPkg/Library/MbedTlsLib/mbedtls", False))
-<<<<<<< HEAD
-        rs.append(RequiredSubmodule(
             "SecurityPkg/DeviceSecurity/SpdmLib/libspdm", False))
         rs.append(RequiredSubmodule(
             "TcgTpmPkg/Library/TpmLib/TPM", False))
-=======
->>>>>>> d4d2ac9173 (BaseCore: Enable CI)
         return rs
 
     def GetName(self):
