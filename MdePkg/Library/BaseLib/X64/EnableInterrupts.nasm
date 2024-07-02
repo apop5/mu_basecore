@@ -29,4 +29,3 @@ global ASM_PFX(EnableInterrupts)
 ASM_PFX(EnableInterrupts):
     sti
     ret
-
