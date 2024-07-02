@@ -10,7 +10,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #pragma once
 
 #define VALID_TPL(a)  ((a) <= TPL_HIGH_LEVEL)
-extern  UINTN  gEventPending;
+extern  volatile UINTN  gEventPending;             // MU_CHANGE
 
 ///
 /// Set if Event is part of an event group
