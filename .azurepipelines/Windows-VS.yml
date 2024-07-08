@@ -110,34 +110,3 @@ extends:
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
         ArchList: $(arch_list)
         SelfHostAgent: true
-      TARGET_EMBEDDED_PRM:
-        Pkgs: 'EmbeddedPkg,PrmPkg'
-        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
-        ArchList: $(arch_list)
-      TARGET_FMP_FAT:
-        Pkgs: 'FmpDevicePkg,FatPkg'
-        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
-        ArchList: $(arch_list)
-      TARGET_SECURITY:
-        Pkgs: 'SecurityPkg'
-        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
-        ArchList: $(arch_list)
-      TARGET_EMBEDDED_PRM_ARM:
-        Pkgs: 'EmbeddedPkg,PrmPkg'
-        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
-        ArchList: $(arch_list)
-        SelfHostAgent: true
-      TARGET_FMP_FAT_ARM:
-        Pkgs: 'FmpDevicePkg,FatPkg'
-        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
-        ArchList: $(arch_list)
-        SelfHostAgent: true
-      TARGET_SECURITY_ARM:
-        Pkgs: 'SecurityPkg'
-        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
-        ArchList: $(arch_list)
-        SelfHostAgent: true
-      TARGET_INTEL_FSP2:
-        Pkgs: 'IntelFsp2Pkg,IntelFsp2WrapperPkg'
-        Targets: 'DEBUG,RELEASE,NO-TARGET'
-        ArchList: $(arch_list)

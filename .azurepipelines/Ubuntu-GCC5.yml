@@ -111,6 +111,7 @@ extends:
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
         ArchList: $(arch_list)
         SelfHostAgent: true
+<<<<<<< HEAD:.azurepipelines/Ubuntu-GCC5.yml
       TARGET_EMBEDDED_PRM:
         Pkgs: 'EmbeddedPkg,PrmPkg'
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
@@ -142,3 +143,5 @@ extends:
         Pkgs: 'IntelFsp2Pkg,IntelFsp2WrapperPkg'
         Targets: 'DEBUG,RELEASE,NO-TARGET'
         ArchList: $(arch_list)
+=======
+>>>>>>> 1ae9468e88 (ArmPkg, ArmPlatformPkg: Enable CI):.azurepipelines/Ubuntu-GCC.yml
