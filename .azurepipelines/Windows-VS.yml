@@ -13,23 +13,6 @@
 # Copyright (c) Microsoft Corporation.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
-<<<<<<< HEAD
-trigger: none
-
-schedules:
-- cron: "0 7 * * *"
-  displayName: Daily Build
-  branches:
-    include:
-    - master
-    - stable/*
-  always: true
-
-pr:
-- master
-- stable/*
-=======
->>>>>>> d4d2ac9173 (BaseCore: Enable CI)
 
 variables:
 - group: architectures-x86-64
@@ -39,17 +22,6 @@ variables:
 extends:
   template: MuDevOpsWrapper.yml
   parameters:
-<<<<<<< HEAD
-    tool_chain_tag: 'VS2022'
-    vm_image: ${{ variables.default_windows_vm }}
-    arch_list: "IA32,X64"
-    usePythonVersion: ${{ variables.default_python_version }}
-    extra_install_step:
-    - powershell: choco install opencppcoverage; Write-Host "##vso[task.prependpath]C:\Program Files\OpenCppCoverage"
-      displayName: Install Code Coverage Tool
-      condition: and(gt(variables.pkg_count, 0), succeeded())
-
-=======
     do_ci_build: true
     do_ci_setup: false
     do_non_ci_build: false
@@ -120,4 +92,21 @@ extends:
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
         ArchList: $(arch_list)
         SelfHostAgent: true
->>>>>>> d4d2ac9173 (BaseCore: Enable CI)
+      TARGET_ARMPKG:
+        Pkgs: 'ArmPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+      TARGET_ARMPLATFORMPKG:
+        Pkgs: 'ArmPlatformPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+      TARGET_ARMPKG_ARM:
+        Pkgs: 'ArmPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+        SelfHostAgent: true
+      TARGET_ARMPLATFORMPKG_ARM:
+        Pkgs: 'ArmPlatformPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+        SelfHostAgent: true
