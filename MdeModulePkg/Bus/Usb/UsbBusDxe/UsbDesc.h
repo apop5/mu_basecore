@@ -7,7 +7,8 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
-#pragma once
+#ifndef _USB_DESCRIPTOR_H_
+#define _USB_DESCRIPTOR_H_
 
 #define USB_MAX_INTERFACE_SETTING  256
 
@@ -222,3 +223,18 @@ UsbIoClearFeature (
   IN  UINT16               Feature,
   IN  UINT16               Index
   );
+
+// MU_CHANGE [BEGIN] 291137
+
+/**
+  Usb UsbIo interface to update descriptor information.
+  @param  UsbDev                The Usb device.
+**/
+VOID
+UsbUpdateDescriptors (
+  IN USB_DEVICE  *UsbDev
+  );
+
+// MU_CHANGE END
+
+#endif
