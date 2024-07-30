@@ -77,7 +77,12 @@ HashStart (
   CheckSupportedHashMaskMismatch ();
 
   HashCtx = AllocatePool (sizeof (*HashCtx) * mHashInterfaceCount);
-  ASSERT (HashCtx != NULL);
+  // MU_CHANGE - CodeQL Change - unguardednullreturndereference
+  if (HashCtx == NULL) {
+    ASSERT (HashCtx != NULL);
+    return EFI_OUT_OF_RESOURCES;
+  }
+  // MU_CHANGE - CodeQL Change - unguardednullreturndereference
 
   for (Index = 0; Index < mHashInterfaceCount; Index++) {
     HashMask = Tpm2GetHashMaskFromGuid (&mHashInterface[Index].HashGuid);
@@ -279,8 +284,18 @@ HashAndExtend (
 
   CheckSupportedHashMaskMismatch ();
 
-  HashStart (&HashHandle);
-  HashUpdate (HashHandle, DataToHash, DataToHashLen);
+  // MU_CHANGE - CodeQL Change - unguardednullreturndereference
+  Status = HashStart (&HashHandle);
+  if (EFI_ERROR (Status)) {
+    return Status;
+  }
+
+  Status = HashUpdate (HashHandle, DataToHash, DataToHashLen);
+  if (EFI_ERROR (Status)) {
+    return Status;
+  }
+
+  // MU_CHANGE - CodeQL Change - unguardednullreturndereference
   Status = HashCompleteAndExtend (HashHandle, PcrIndex, NULL, 0, DigestList);
 
   return Status;
