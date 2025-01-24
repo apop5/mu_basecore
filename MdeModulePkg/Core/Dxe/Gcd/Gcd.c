@@ -2326,7 +2326,7 @@ CoreInitializeMemoryServices (
     //
     // Skip all HOBs except Resource Descriptor HOBs
     //
-    if (GET_HOB_TYPE (Hob) != EFI_HOB_TYPE_RESOURCE_DESCRIPTOR) {
+    if ((GET_HOB_TYPE (Hob) != EFI_HOB_TYPE_RESOURCE_DESCRIPTOR) && (GET_HOB_TYPE (Hob) != EFI_HOB_TYPE_RESOURCE_DESCRIPTOR2)) { // MU_CHANGE Resource Descriptor v2
       continue;
     }
 
@@ -2450,7 +2450,7 @@ CoreInitializeMemoryServices (
       //
       // Skip all HOBs except Resource Descriptor HOBs
       //
-      if (GET_HOB_TYPE (Hob) != EFI_HOB_TYPE_RESOURCE_DESCRIPTOR) {
+      if ((GET_HOB_TYPE (Hob) != EFI_HOB_TYPE_RESOURCE_DESCRIPTOR) && (GET_HOB_TYPE (Hob) != EFI_HOB_TYPE_RESOURCE_DESCRIPTOR2)) { // MU_CHANGE Resource Descriptor v2
         continue;
       }
 
@@ -2653,7 +2653,7 @@ CoreInitializeGcdServices (
     GcdMemoryType = EfiGcdMemoryTypeNonExistent;
     GcdIoType     = EfiGcdIoTypeNonExistent;
 
-    if (GET_HOB_TYPE (Hob) == EFI_HOB_TYPE_RESOURCE_DESCRIPTOR) {
+    if ((GET_HOB_TYPE (Hob) == EFI_HOB_TYPE_RESOURCE_DESCRIPTOR) || (GET_HOB_TYPE (Hob) == EFI_HOB_TYPE_RESOURCE_DESCRIPTOR2)) { // MU_CHANGE Resource Descriptor v2
       ResourceHob = Hob.ResourceDescriptor;
 
       switch (ResourceHob->ResourceType) {
