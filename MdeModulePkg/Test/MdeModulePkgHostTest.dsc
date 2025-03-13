@@ -43,6 +43,7 @@
   }
 
   # MU_CHANGE [BEGIN] - Add a host-based unit test for common variable services code.
+!if "MSFT" in $(FAMILY)
   MdeModulePkg/Universal/Variable/RuntimeDxe/RuntimeDxeUnitTest/VariableRuntimeDxeUnitTest.inf {
     <LibraryClasses>
       UefiLib|MdePkg/Test/Mock/Library/Stub/StubUefiLib/StubUefiLib.inf
@@ -69,6 +70,7 @@
       # SCT tests are noisy, so disable VERBOSE.
       gUnitTestFrameworkPkgTokenSpaceGuid.PcdUnitTestLogLevel|0x00000007
   }
+!endif
   # MU_CHANGE [END] - Add a host-based unit test for common variable services code.
 
   MdeModulePkg/Library/UefiSortLib/UnitTest/UefiSortLibUnitTest.inf {
