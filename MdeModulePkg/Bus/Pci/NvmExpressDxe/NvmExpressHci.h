@@ -8,7 +8,8 @@
 
 **/
 
-#pragma once
+#ifndef _NVME_HCI_H_
+#define _NVME_HCI_H_
 
 #define NVME_BAR  0
 
@@ -64,3 +65,25 @@ NvmeIdentifyNamespace (
   IN UINT32                        NamespaceId,
   IN VOID                          *Buffer
   );
+
+// MU_CHANGE [BEGIN] - Allocate IO Queue Buffer
+
+/**
+  Read Nvm Express admin queue attributes register.
+
+  @param  Private          The pointer to the NVME_CONTROLLER_PRIVATE_DATA data structure.
+  @param  Aqa              The buffer used to store the content to be read from admin queue attributes register.
+
+  @return EFI_SUCCESS      Successfully read data from the admin queue attributes register.
+  @return EFI_DEVICE_ERROR Fail to read data from the admin queue attributes register.
+
+**/
+EFI_STATUS
+ReadNvmeAdminQueueAttributes (
+  IN  NVME_CONTROLLER_PRIVATE_DATA  *Private,
+  OUT NVME_AQA                      *Aqa
+  );
+
+// MU_CHANGE [END] - Allocate IO Queue Buffer
+
+#endif
