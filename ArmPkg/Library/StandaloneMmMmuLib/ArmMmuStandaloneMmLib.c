@@ -278,6 +278,84 @@ RequestMemoryPermissionChange (
   return SendMemoryPermissionRequest (UseFfaAbis, &SvcArgs, &Ret);
 }
 
+// MU_CHANGE: Add ArmSetMemoryRegionNoAccess function
+EFI_STATUS
+ArmSetMemoryRegionNoAccess (
+  IN  EFI_PHYSICAL_ADDRESS  BaseAddress,
+  IN  UINT64                Length
+  )
+{
+  EFI_STATUS  Status;
+  UINT32      MemoryAttributes;
+  UINT32      PermissionRequest;
+  BOOLEAN     UseFfaAbis;
+
+  UseFfaAbis = IsFfaMemoryAbiSupported ();
+
+  Status = GetMemoryPermissions (UseFfaAbis, BaseAddress, &MemoryAttributes);
+  if (!EFI_ERROR (Status)) {
+    if (UseFfaAbis) {
+      PermissionRequest = ARM_FFA_SET_MEM_ATTR_MAKE_PERM_REQUEST (
+                            MemoryAttributes,
+                            ARM_FFA_SET_MEM_ATTR_DATA_PERM_NO_ACCESS
+                            );
+    } else {
+      PermissionRequest = ARM_SPM_MM_SET_MEM_ATTR_MAKE_PERM_REQUEST (
+                            MemoryAttributes,
+                            ARM_SPM_MM_SET_MEM_ATTR_DATA_PERM_NO_ACCESS
+                            );
+    }
+
+    return RequestMemoryPermissionChange (
+             UseFfaAbis,
+             BaseAddress,
+             Length,
+             PermissionRequest
+             );
+  }
+
+  return Status;
+}
+
+// MU_CHANGE: Add ArmClearMemoryRegionNoAccess function
+EFI_STATUS
+ArmClearMemoryRegionNoAccess (
+  IN  EFI_PHYSICAL_ADDRESS  BaseAddress,
+  IN  UINT64                Length
+  )
+{
+  EFI_STATUS  Status;
+  UINT32      MemoryAttributes;
+  UINT32      PermissionRequest;
+  BOOLEAN     UseFfaAbis;
+
+  UseFfaAbis = IsFfaMemoryAbiSupported ();
+
+  Status = GetMemoryPermissions (UseFfaAbis, BaseAddress, &MemoryAttributes);
+  if (!EFI_ERROR (Status)) {
+    if (UseFfaAbis) {
+      PermissionRequest = ARM_FFA_SET_MEM_ATTR_MAKE_PERM_REQUEST (
+                            MemoryAttributes,
+                            ARM_FFA_SET_MEM_ATTR_DATA_PERM_RW
+                            );
+    } else {
+      PermissionRequest = ARM_SPM_MM_SET_MEM_ATTR_MAKE_PERM_REQUEST (
+                            MemoryAttributes,
+                            ARM_SPM_MM_SET_MEM_ATTR_DATA_PERM_RW
+                            );
+    }
+
+    return RequestMemoryPermissionChange (
+             UseFfaAbis,
+             BaseAddress,
+             Length,
+             PermissionRequest
+             );
+  }
+
+  return Status;
+}
+
 /**
   Set XN bit preserving other permission.
 
