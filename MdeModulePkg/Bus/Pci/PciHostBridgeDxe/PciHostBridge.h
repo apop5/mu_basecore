@@ -7,7 +7,8 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
-#pragma once
+#ifndef _PCI_HOST_BRIDGE_H_
+#define _PCI_HOST_BRIDGE_H_
 
 #include <PiDxe.h>
 #include <IndustryStandard/Acpi.h>
@@ -264,4 +265,6 @@ GetTranslationByResourceType (
   );
 
 extern EFI_CPU_IO2_PROTOCOL  *mCpuIo;
-extern EDKII_IOMMU_PROTOCOL  *mIoMmu;
+// extern EDKII_IOMMU_PROTOCOL  *mIoMmu; // MU_CHANGE
+
+#endif
