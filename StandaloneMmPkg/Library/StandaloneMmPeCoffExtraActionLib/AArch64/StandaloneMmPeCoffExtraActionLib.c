@@ -164,6 +164,7 @@ UpdatePeCoffPermissions (
 
     Base = TmpContext.ImageAddress + SectionHeader.VirtualAddress;
 
+    // MU_CHANGE [BEGIN] - Skip sections with zero size
     if (SectionHeader.Misc.VirtualSize == 0) {
       DEBUG ((
         DEBUG_INFO,
@@ -173,6 +174,7 @@ UpdatePeCoffPermissions (
         Base
         ));
     } else if ((SectionHeader.Characteristics & EFI_IMAGE_SCN_MEM_EXECUTE) == 0) {
+      // MU_CHANGE [END] - Skip sections with zero size
       if ((SectionHeader.Characteristics & EFI_IMAGE_SCN_MEM_WRITE) == 0) {
         DEBUG ((
           DEBUG_INFO,
