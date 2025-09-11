@@ -1,4 +1,4 @@
-/** @file
+﻿/** @file
   This library is used by other modules to send TPM2 command.
 
 Copyright (c) 2013 - 2024, Intel Corporation. All rights reserved. <BR>
@@ -1230,3 +1230,23 @@ Tpm2PcrReadForActiveBank (
   IN      TPMI_DH_PCR  PcrHandle,
   OUT     TPML_DIGEST  *HashList
   );
+
+// MU_CHANGE [BEGIN]
+
+/**
+  Check if all hash algorithms supported in HashAlgorithmMask are
+  present in the DigestList.
+
+  @param DigestList         Digest list
+  @param HashAlgorithmMask  Bitfield of allowed hash algorithms.
+
+  @retval TRUE  All hash algorithms present.
+  @retval FALSE Some hash algorithms not present.
+**/
+BOOLEAN
+IsDigestListInSyncWithHashAlgorithmMask (
+  IN TPML_DIGEST_VALUES  *DigestList,
+  IN UINT32              HashAlgorithmMask
+  );
+
+// MU_CHANGE [END]
