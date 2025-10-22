@@ -361,6 +361,9 @@ UpdateFvFileDevicePath (
     // Build the shell device path
     //
     NewDevicePath = DevicePathFromHandle (FoundFvHandle);
+    if (NewDevicePath != NULL) {
+      return EFI_NOT_FOUND;
+    }
 
     EfiInitializeFwVolDevicepathNode (&FvFileNode, FileGuid);
     NewDevicePath = AppendDevicePathNode (NewDevicePath, (EFI_DEVICE_PATH_PROTOCOL *)&FvFileNode);
@@ -1936,7 +1939,6 @@ DeleteDriverImage (
   }
 
   if (!Found) {
-    ASSERT (Found);
     goto Exit;
   }
 
