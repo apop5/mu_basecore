@@ -1,11 +1,12 @@
-/** @file
+/** @file MockSafeIntLib.h
   Google Test mocks for the SafeInt Library
 
   Copyright (c) Microsoft Corporation.
   SPDX-License-Identifier: BSD-2-Clause-Patent
 **/
 
-#pragma once
+#ifndef MOCK_INT_SAFE_LIB_H_
+#define MOCK_INT_SAFE_LIB_H_
 
 #include <Library/GoogleTestLib.h>
 #include <Library/FunctionMockLib.h>
@@ -996,3 +997,5 @@ struct MockSafeIntLib {
     )
     );
 };
+
+#endif
