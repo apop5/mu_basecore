@@ -99,12 +99,10 @@
         "ExtendWords": [
            "ARMHB",                  # ARMHB000
            "ARMHC",                  # ARMHC600
-           "ARMHD",                  # ARMHD620
            "ARMLTD",
            "AMLDBG",
            "EISAID",
            "cacheablity",
-           "cavium",
            "CCIDX",
            "CCSIDR",
            "cfmws",
@@ -112,9 +110,7 @@
            "deviceid",
            "EArch",
            "edynamic",
-           "eventq",
            "EOBJECT",
-           "gerror",
            "invoc",
            "ITARGETSR",
            "GTBLOCK",
@@ -132,7 +128,6 @@
            "ROOTNODEBASE",
            "sapic",
            "ssdtcmn",
-           "ssdtdmc",
            "ssdtserialporttemplate",
            "SMCCC",
            "SMMUV",
@@ -144,15 +139,9 @@
            "Vatos",
            "WBINVD",
            "xapic",
-           "aplic",
-           "aplics",
-           "eriscv",
-           "gmode",
-           "imsic",
-           "imsics",
-           "plics",
-           "rintc",
-           "smcbios"
+           "cavium",
+           "eventq",
+           "gerror"
            ],           # words to extend to the dictionary for this package
         "IgnoreStandardPaths": [],   # Standard Plugin defined paths that
                                      # should be ignore
