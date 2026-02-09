@@ -6,7 +6,8 @@
 
 **/
 
-#pragma once
+#ifndef CPU_PAGE_TABLE_H_
+#define CPU_PAGE_TABLE_H_
 
 #include <Base.h>
 #include <Library/BaseLib.h>
@@ -15,8 +16,6 @@
 #include <Library/CpuPageTableLib.h>
 
 #define REGION_LENGTH(l)  LShiftU64 (1, (l) * 9 + 3)
-
-#define MAX_PAE_PDPTE_NUM  4
 
 /**
   Return TRUE when the page table entry is a leaf entry that points to the physical address memory.
@@ -61,3 +60,5 @@ PageTableLibGetPnleMapAttribute (
   IN IA32_PAGE_NON_LEAF_ENTRY  *Pnle,
   IN IA32_MAP_ATTRIBUTE        *ParentMapAttribute
   );
+
+#endif
