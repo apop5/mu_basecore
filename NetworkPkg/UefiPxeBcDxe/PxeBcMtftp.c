@@ -419,7 +419,7 @@ PxeBcMtftp6WriteFile (
   Token.CheckPacket     = PxeBcMtftp6CheckPacket;
   Token.TimeoutCallback = NULL;
   Token.PacketNeeded    = NULL;
-  Token.Context         = Private;
+  Token.Context         = Private;  // MU_CHANGE: Initialize private context in MTFTP write functions
 
   Status = Mtftp6->WriteFile (Mtftp6, &Token);
   //
@@ -937,7 +937,7 @@ PxeBcMtftp4WriteFile (
   Token.CheckPacket     = PxeBcMtftp4CheckPacket;
   Token.TimeoutCallback = NULL;
   Token.PacketNeeded    = NULL;
-  Token.Context         = Private;
+  Token.Context         = Private;  // MU_CHANGE: Initialize private context in MTFTP write functions
 
   Status = Mtftp4->WriteFile (Mtftp4, &Token);
   //
