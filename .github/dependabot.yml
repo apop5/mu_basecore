@@ -44,13 +44,18 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "tuesday"
       timezone: "America/Los_Angeles"
       time: "19:00"
     ignore:
       # Ignore dependencies that are synced from mu_devops
       - dependency-name: "microsoft/mu_devops*"
       - dependency-name: "github/codeql-action*"
+    groups:
+      github-actions-all:
+        patterns:
+          - "*"
     commit-message:
       prefix: "GitHub Action"
     labels:
@@ -61,13 +66,15 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "sunday"
       timezone: "America/Los_Angeles"
-      time: "19:00"
+      time: "21:00"
     groups:
-      pip-all:
-        patterns:
-          - "*"
+      pip-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
     commit-message:
       prefix: "pip"
     labels:
