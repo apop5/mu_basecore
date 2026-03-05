@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -77,7 +77,7 @@ jobs:
 
       - name: Upload Build Logs
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: logs-${{ matrix.tool_chain }}-${{ matrix.target }}
           path: |
@@ -86,7 +86,7 @@ jobs:
             BaseTools/BaseToolsBuild/BASETOOLS_BUILD.txt
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: basetools-${{ matrix.tool_chain }}-${{ matrix.target }}
           path: ${{ matrix.output_dir }}
@@ -105,7 +105,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           path: ${{ runner.temp }}/artifacts
 
