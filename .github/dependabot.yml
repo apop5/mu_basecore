@@ -44,10 +44,9 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: "daily"
       timezone: "America/Los_Angeles"
-      time: "06:00"
+      time: "19:00"
     ignore:
       # Ignore dependencies that are synced from mu_devops
       - dependency-name: "microsoft/mu_devops*"
@@ -62,10 +61,13 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "wednesday"
+      interval: "daily"
       timezone: "America/Los_Angeles"
-      time: "01:00"
+      time: "19:00"
+    groups:
+      pip-all:
+        patterns:
+          - "*"
     commit-message:
       prefix: "pip"
     labels:
