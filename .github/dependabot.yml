@@ -53,7 +53,7 @@ updates:
       - dependency-name: "microsoft/mu_devops*"
       - dependency-name: "github/codeql-action*"
     groups:
-      gh-actions-all:
+      github-actions-all:
         patterns:
           - "*"
     commit-message:
@@ -71,7 +71,7 @@ updates:
       timezone: "America/Los_Angeles"
       time: "21:00"
     groups:
-      pip-minor-and-patch:
+      pip-minor-patch:
         update-types:
           - "minor"
           - "patch"
@@ -82,3 +82,4 @@ updates:
       - "type:dependencies"
       - "type:dependabot"
     rebase-strategy: "disabled"
+    
