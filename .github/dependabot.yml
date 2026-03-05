@@ -63,6 +63,9 @@ updates:
       - "type:dependabot"
     rebase-strategy: "disabled"
 
+  # ----------------------------
+  # Python - minor/patch (grouped into one PR)
+  # ----------------------------
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
@@ -71,10 +74,37 @@ updates:
       timezone: "America/Los_Angeles"
       time: "21:00"
     groups:
-      pip-minor-patch:
+      pip-minor-and-patch:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+    commit-message:
+      prefix: "pip"
+    labels:
+      - "language:python"
+      - "type:dependencies"
+      - "type:dependabot"
+    rebase-strategy: "disabled"
+
+  # ----------------------------
+  # Python - major (individual PRs)
+  # ----------------------------
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      timezone: "America/Los_Angeles"
+      time: "21:00"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-patch"
+          - "version-update:semver-minor"
     commit-message:
       prefix: "pip"
     labels:
