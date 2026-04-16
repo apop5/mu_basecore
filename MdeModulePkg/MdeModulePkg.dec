@@ -692,6 +692,16 @@
   #  If developer need implement such functionality, they should use BasePeCoffLib.
   gEfiLoadPeImageProtocolGuid    = { 0x5CB5C776, 0x60D5, 0x45EE, { 0x88, 0x3C, 0x45, 0x27, 0x08, 0xCD, 0x74, 0x3F }}
 
+  ## I3C Bus protocols.  The bus driver produces gEfiI3cIoProtocolGuid child
+  #  handles from a controller that exposes both gEfiI3cHostProtocolGuid and
+  #  gEfiI3cEnumerateProtocolGuid.
+  #  Include/Protocol/I3cIo.h
+  gEfiI3cIoProtocolGuid         = { 0x4a6c8e7d, 0x2b3f, 0x4e5a, { 0x81, 0x9c, 0x3f, 0x7e, 0xb2, 0x15, 0xa4, 0x68 }}
+  #  Include/Protocol/I3cEnumerate.h
+  gEfiI3cEnumerateProtocolGuid  = { 0x6d8e2a1b, 0x9c5f, 0x4b7d, { 0xa3, 0x0e, 0x59, 0x2f, 0x84, 0xc7, 0x1b, 0x36 }}
+  #  Include/Protocol/I3cHost.h
+  gEfiI3cHostProtocolGuid       = { 0x7f3c9e4a, 0x1d6b, 0x4f8c, { 0xb5, 0x72, 0xae, 0x4d, 0x31, 0x8f, 0x56, 0x2c }}
+
   ## Print protocols define basic print functions to print the format unicode and ascii string.
   # Include/Protocol/Print2.h
   gEfiPrint2ProtocolGuid          = { 0xf05976ef, 0x83f1, 0x4f3d, { 0x86, 0x19, 0xf7, 0x59, 0x5d, 0x41, 0xe5, 0x38 } }

@@ -1,0 +1,51 @@
+## @file
+#  I3C Bus DXE Driver
+#
+#  This driver consumes EFI_I3C_HOST_PROTOCOL and EFI_I3C_ENUMERATE_PROTOCOL
+#  on an I3C controller handle, enumerates devices on the bus, and installs
+#  EFI_I3C_IO_PROTOCOL on a child handle for each discovered device.
+#
+#  Copyright (c) Microsoft Corporation. All rights reserved.<BR>
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = I3cBusDxe
+  FILE_GUID                      = 3E2D1F8A-4B7C-4E9D-A3F1-0C5B8D6E2A74
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeI3cBus
+  UNLOAD_IMAGE                   = I3cBusUnload
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64 ARM AARCH64
+#
+
+[Sources.common]
+  I3cDxe.h
+  I3cBus.c
+
+[LibraryClasses]
+  BaseMemoryLib
+  DebugLib
+  DevicePathLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiLib
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+
+[Protocols]
+  gEfiI3cIoProtocolGuid                           ## BY_START
+  gEfiDevicePathProtocolGuid                      ## BY_START
+                                                  ## TO_START
+  gEfiI3cEnumerateProtocolGuid                    ## TO_START
+  gEfiI3cHostProtocolGuid                         ## TO_START
+  gEfiDriverBindingProtocolGuid                   ## PRODUCES
+  gEfiComponentNameProtocolGuid                   ## PRODUCES
+  gEfiComponentName2ProtocolGuid                  ## PRODUCES
