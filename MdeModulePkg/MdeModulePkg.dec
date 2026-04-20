@@ -1340,6 +1340,10 @@
   # #      page or tail guard page.
   # #   c) UEFI freed-memory guard and UEFI pool/page guard cannot be enabled
   # #      at the same time.
+  # #   d) It is not supported to have a guard page at page 0 because this page
+  # #    may be used for NULL pointer detection or have special meaning if left
+  # #    mapped. Heap Guard will reject a memory allocation if the head guard
+  # #    would land on page 0.
   # #
   # #   BIT0 - Enable UEFI page guard.<BR>
   # #   BIT1 - Enable UEFI pool guard.<BR>
@@ -1403,15 +1407,6 @@
   # @Prompt FFA TX/RX Buffer Page Count
   gEfiMdeModulePkgTokenSpaceGuid.PcdFfaTxRxPageCount|1|UINT64|0x30001062
   
-  # MU_CHANGE [BEGIN] - Support indefinite boot retries
-  # # Some platforms require that all EfiLoadOptions are retried until one of the options 
-  # # succeeds. When True, this Pcd will force Bds to retry all the valid EfiLoadOptions 
-  # # indefinitely until one of the options succeeds. 
-  # #   TRUE  - Efi boot options will be retried indefinitely.
-  # #   FALSE - Efi boot options will not be retried.
-  gEfiMdeModulePkgTokenSpaceGuid.PcdSupportInfiniteBootRetries|FALSE|BOOLEAN|0x40000152
-  # MU_CHANGE [END]
-
   ## Some platforms require that all EfiLoadOptions are retried until one of the options
   # boots. When True, this Pcd will force Bds to retry all the valid EfiLoadOptions
   # indefinitely until one of the options boots.
@@ -1976,6 +1971,11 @@
   # @Prompt Describes background color of progress bar.
   gEfiMdeModulePkgTokenSpaceGuid.PcdProgressBarBackgroundColor|0x00808080|UINT32|0x0000010B
   ## MU_CHANGE [END]
+
+  ## Indicate the default timeout value for SATA device to be ready for operations in seconds.
+  #
+  # @Prompt SATA device ready for operations timoeout (s), default value is 16s.
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSataDeviceReadyTimeout|16|UINT8|0x00000038
 
 [PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
   ## This PCD defines the Console output row. The default value is 25 according to UEFI spec.
