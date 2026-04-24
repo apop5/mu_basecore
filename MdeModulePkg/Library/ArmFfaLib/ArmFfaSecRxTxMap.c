@@ -75,7 +75,7 @@ ArmFfaLibGetRxTxBuffers (
   }
 
   if (RxBuffer != NULL) {
-    *RxBuffer = (VOID *)RxTxBufferAllocationHob->AllocDescriptor.MemoryBaseAddress + BufferSize;
+    *RxBuffer = (VOID *)((UINT8 *)RxTxBufferAllocationHob->AllocDescriptor.MemoryBaseAddress + BufferSize);
   }
 
   if (RxBufferSize != NULL) {
@@ -190,7 +190,7 @@ ArmFfaLibRxTxMap (
   }
 
   TxBuffer = Buffers;
-  RxBuffer = Buffers + (EFI_PAGES_TO_SIZE (PcdGet64 (PcdFfaTxRxPageCount)));
+  RxBuffer = (UINT8 *)Buffers + (EFI_PAGES_TO_SIZE (PcdGet64 (PcdFfaTxRxPageCount)));
 
   FfaArgs.Arg0 = ARM_FID_FFA_RXTX_MAP;
   FfaArgs.Arg1 = (UINTN)TxBuffer;

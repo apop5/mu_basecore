@@ -184,7 +184,7 @@ AddErrorSourceDescriptor (
     ErrorSourceDescriptorList,
     ErrorSourceDescriptorListSize
     );
-  HestDataList->DataLength = ErrorSourceDescriptorListSize;
+  HestDataList->DataLength = (UINT32)ErrorSourceDescriptorListSize;
 
   InsertTailList (&gHestErrorSourceList, &HestDataList->Link);
 
@@ -194,8 +194,8 @@ AddErrorSourceDescriptor (
   HestDataList  = BASE_CR (Link, HEST_DXE_DRIVER_DATA, Link);
   HestHeaderPtr = (EFI_ACPI_6_4_HARDWARE_ERROR_SOURCE_TABLE_HEADER *)
                   HestDataList->HestTableData;
-  HestHeaderPtr->Header.Length    += ErrorSourceDescriptorListSize;
-  HestHeaderPtr->ErrorSourceCount += ErrorSourceDescriptorCount;
+  HestHeaderPtr->Header.Length    += (UINT32)ErrorSourceDescriptorListSize;
+  HestHeaderPtr->ErrorSourceCount += (UINT32)ErrorSourceDescriptorCount;
 
   DEBUG ((
     DEBUG_INFO,
@@ -264,7 +264,7 @@ InstallHestAcpiTable (
       HestDataList->HestTableData,
       HestDataList->DataLength
       );
-    HestTable += HestDataList->DataLength;
+    HestTable = (UINT8 *)HestTable + HestDataList->DataLength;
 
     // Free List HEST data nodes.
     Link = RemoveEntryList (Link);
@@ -272,7 +272,7 @@ InstallHestAcpiTable (
     // FreePool (HestDataList);
   }
 
-  HestTable -= HestTableSize;
+  HestTable = (UINT8 *)HestTable - HestTableSize;
   // Install the HEST table.
   Status = gAcpiTableProtocol->InstallAcpiTable (
                                  gAcpiTableProtocol,

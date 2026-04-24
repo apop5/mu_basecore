@@ -130,7 +130,7 @@ ArmFfaLibRxTxMap (
   }
 
   TxBuffer = Buffers;
-  RxBuffer = Buffers + BufferSize;
+  RxBuffer = (UINT8 *)Buffers + BufferSize;
 
   ZeroMem (&FfaArgs, sizeof (ARM_FFA_ARGS));
   FfaArgs.Arg0 = ARM_FID_FFA_RXTX_MAP;

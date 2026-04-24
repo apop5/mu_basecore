@@ -49,25 +49,25 @@ EfiStatusToFfaStatus (
 {
   switch (Status) {
     case EFI_SUCCESS:
-      return ARM_FFA_RET_SUCCESS;
+      return (UINTN)ARM_FFA_RET_SUCCESS;
     case EFI_INVALID_PARAMETER:
-      return ARM_FFA_RET_INVALID_PARAMETERS;
+      return (UINTN)ARM_FFA_RET_INVALID_PARAMETERS;
     case EFI_OUT_OF_RESOURCES:
-      return ARM_FFA_RET_NO_MEMORY;
+      return (UINTN)ARM_FFA_RET_NO_MEMORY;
     case EFI_NO_RESPONSE:
-      return ARM_FFA_RET_BUSY;
+      return (UINTN)ARM_FFA_RET_BUSY;
     case EFI_INTERRUPT_PENDING:
-      return ARM_FFA_RET_INTERRUPTED;
+      return (UINTN)ARM_FFA_RET_INTERRUPTED;
     case EFI_ACCESS_DENIED:
-      return ARM_FFA_RET_DENIED;
+      return (UINTN)ARM_FFA_RET_DENIED;
     case EFI_ABORTED:
-      return ARM_FFA_RET_ABORTED;
+      return (UINTN)ARM_FFA_RET_ABORTED;
     case EFI_NOT_FOUND:
-      return ARM_FFA_RET_NODATA;
+      return (UINTN)ARM_FFA_RET_NODATA;
     case EFI_NOT_READY:
-      return ARM_FFA_RET_NOT_READY;
+      return (UINTN)ARM_FFA_RET_NOT_READY;
     default:
-      return ARM_FFA_RET_NOT_SUPPORTED;
+      return (UINTN)ARM_FFA_RET_NOT_SUPPORTED;
   }
 }
 
@@ -126,13 +126,13 @@ FfaArgsToEfiStatus (
   UINT32  FfaStatus;
 
   if (FfaArgs == NULL) {
-    FfaStatus = ARM_FFA_RET_INVALID_PARAMETERS;
+    FfaStatus = (UINT32)ARM_FFA_RET_INVALID_PARAMETERS;
   } else if (IS_FID_FFA_ERROR (FfaArgs->Arg0)) {
     /*
      * In case of error, the Arg0 will be set to the fid FFA_ERROR.
      * and Error code is set in Arg2.
      */
-    FfaStatus = FfaArgs->Arg2;
+    FfaStatus = (UINT32)FfaArgs->Arg2;
   } else if (FfaArgs->Arg0 == ARM_FFA_RET_NOT_SUPPORTED) {
     /*
      * If Some FF-A ABI doesn't support, it sets ARM_FFA_RET_NOT_SUPPORTED
@@ -140,11 +140,11 @@ FfaArgsToEfiStatus (
      * In this case, set Arg2 as ARM_FFA_RET_NOT_SUPPORTED so that
      * FfaStatusToEfiStatus (FfaARgs.Arg2) returns proper EFI_STATUS.
      */
-    FfaStatus = ARM_FFA_RET_NOT_SUPPORTED;
+    FfaStatus = (UINT32)ARM_FFA_RET_NOT_SUPPORTED;
   } else if ((FfaArgs->Arg0 == ARM_FID_FFA_INTERRUPT) || (FfaArgs->Arg0 == ARM_FID_FFA_YIELD)) {
-    FfaStatus = ARM_FFA_RET_INTERRUPTED;
+    FfaStatus = (UINT32)ARM_FFA_RET_INTERRUPTED;
   } else {
-    FfaStatus = ARM_FFA_RET_SUCCESS;
+    FfaStatus = (UINT32)ARM_FFA_RET_SUCCESS;
   }
 
   return FfaStatusToEfiStatus (FfaStatus);
@@ -496,9 +496,9 @@ ArmFfaLibPartitionInfoGet (
     goto ErrorHandler;
   }
 
-  *Count = FfaArgs.Arg2;
+  *Count = (UINT32)FfaArgs.Arg2;
   if (Size != NULL) {
-    *Size = FfaArgs.Arg3;
+    *Size = (UINT32)FfaArgs.Arg3;
   }
 
   return EFI_SUCCESS;

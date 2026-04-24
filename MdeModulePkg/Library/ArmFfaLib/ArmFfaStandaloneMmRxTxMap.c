@@ -140,7 +140,7 @@ ArmFfaLibRxTxMap (
 
   BufferSize = PcdGet64 (PcdFfaTxRxPageCount) * EFI_PAGE_SIZE;
   TxBuffer   = Buffers;
-  RxBuffer   = Buffers + BufferSize;
+  RxBuffer   = (UINT8 *)Buffers + BufferSize;
 
   ZeroMem (&FfaArgs, sizeof (ARM_FFA_ARGS));
   FfaArgs.Arg0 = ARM_FID_FFA_RXTX_MAP;
