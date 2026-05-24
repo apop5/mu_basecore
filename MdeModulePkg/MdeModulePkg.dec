@@ -1958,6 +1958,10 @@
   # @Prompt Maximum number of delayed dispatch entries. Default value is 8.
   gEfiMdeModulePkgTokenSpaceGuid.PcdDelayedDispatchMaxEntries|8|UINT32|0x00000037
 
+  ## SATA Device Ready Timeout value, the unit is 1 second.
+  # @Prompt SATA device ready timeout value.
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSataDeviceReadyTimeout|16|UINT8|0x00000038
+
   ## MU_CHANGE [BEGIN]
   ## This PCD holds the background color of progress bar.
   # Bit fields:
