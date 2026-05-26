@@ -714,6 +714,10 @@
   # Include/Protocol/GenericMemoryTest.h
   gEfiGenericMemTestProtocolGuid = { 0x309DE7F1, 0x7F5E, 0x4ACE, { 0xB4, 0x9C, 0x53, 0x1B, 0xE5, 0xAA, 0x95, 0xEF }}
 
+  ## This protocol provides access to CXL-specific device functionality.
+  # Include/Protocol/CxlIo.h
+  gEdkiiCxlIoProtocolGuid = { 0x8fac60b2, 0xbbc1, 0x41de, { 0xa7, 0x97, 0x98, 0x75, 0xcd, 0xd3, 0xa8, 0xf8 }}
+
   ## This protocol defines the Debugger Configuration interface.
   # Include/Protocol/DebuggerConfiguration.h
   gEfiDebuggerConfigurationProtocolGuid = { 0x577d959c, 0xe967, 0x4546, { 0x86, 0x20, 0xc7, 0x78, 0xfa, 0xe5, 0xda, 0x05 }}
@@ -2518,6 +2522,18 @@
   #   FALSE - PCIe Resizable BAR Capability is not supported.<BR>
   # @Prompt Enable PCIe Resizable BAR Capability support.
   gEfiMdeModulePkgTokenSpaceGuid.PcdPcieResizableBarSupport|FALSE|BOOLEAN|0x10000024
+
+  ## Retry interval in microseconds for PCIe CRS handling during enumeration.
+  # @Prompt Retry interval in microseconds for PCIe CRS handling during enumeration.
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPciCrsRetryIntervalUs|10000|UINT32|0x1000002A
+
+  ## Timeout in seconds for PCIe CRS handling during enumeration. Set to 0 to disable retries.
+  # @Prompt Timeout in seconds for PCIe CRS handling during enumeration.
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPciCrsTimeoutSeconds|0|UINT32|0x1000002B
+
+  ## Maximum Resizable BAR size exponent supported by platform, where size is 2^N MB.
+  # @Prompt Maximum Resizable BAR size exponent supported by platform.
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPcieResizableBarMaxSize|43|UINT8|0x10000030
 
   ## This PCD holds the shared bit mask for page table entries when Tdx is enabled.
   # @Prompt The shared bit mask when Intel Tdx is enabled.

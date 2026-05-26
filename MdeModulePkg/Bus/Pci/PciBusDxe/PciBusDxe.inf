@@ -101,7 +101,10 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdAriSupport                  ## CONSUMES
   gEfiMdeModulePkgTokenSpaceGuid.PcdMrIovSupport                ## CONSUMES
   gEfiMdeModulePkgTokenSpaceGuid.PcdPciDisableBusEnumeration    ## SOMETIMES_CONSUMES
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPciCrsRetryIntervalUs       ## SOMETIMES_CONSUMES
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPciCrsTimeoutSeconds        ## SOMETIMES_CONSUMES
   gEfiMdeModulePkgTokenSpaceGuid.PcdPcieResizableBarSupport     ## CONSUMES
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPcieResizableBarMaxSize     ## SOMETIMES_CONSUMES
   gEfiMdeModulePkgTokenSpaceGuid.PcdDisableBMEonEBS             ## MU_CHANGE
   gEfiMdeModulePkgTokenSpaceGuid.PcdPcieInitializeMps           ## MU_CHANGE: Add support for initializing PCIe MPS
 

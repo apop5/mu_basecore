@@ -1,59 +1,76 @@
 /** @file
-  NVData structure used by the IP6 configuration component.
+  This is defines the tests that will run on BaseCryptLib
 
-  Copyright (c) 2010 - 2013, Intel Corporation. All rights reserved.<BR>
-
+  Copyright (c) Microsoft Corporation.<BR>
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
+#include "TestBaseCryptLib.h"
 
-#pragma once
+SUITE_DESC  mSuiteDesc[] = {
+  //
+  // Title--------------------------Package-------------------Sup--Tdn----TestNum------------TestDesc
+  //
+  { "EKU verify tests",              "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs7EkuTestNum,       mPkcs7EkuTest       },
+  { "HASH verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mHashTestNum,           mHashTest           },
+  { "HMAC verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mHmacTestNum,           mHmacTest           },
+  { "BlockCipher verify tests",      "CryptoPkg.BaseCryptLib", NULL, NULL, &mBlockCipherTestNum,    mBlockCipherTest    },
+  { "RSA verify tests",              "CryptoPkg.BaseCryptLib", NULL, NULL, &mRsaTestNum,            mRsaTest            },
+  { "RSACert verify tests",          "CryptoPkg.BaseCryptLib", NULL, NULL, &mRsaCertTestNum,        mRsaCertTest        },
+  { "PKCS7 verify tests",            "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs7TestNum,          mPkcs7Test          },
+  { "PKCS5 verify tests",            "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs5TestNum,          mPkcs5Test          },
+  { "Authenticode verify tests",     "CryptoPkg.BaseCryptLib", NULL, NULL, &mAuthenticodeTestNum,   mAuthenticodeTest   },
+  { "ImageTimestamp verify tests",   "CryptoPkg.BaseCryptLib", NULL, NULL, &mImageTimestampTestNum, mImageTimestampTest },
+  { "DH verify tests",               "CryptoPkg.BaseCryptLib", NULL, NULL, &mDhTestNum,             mDhTest             },
+  { "PRNG verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mPrngTestNum,           mPrngTest           },
+  { "OAEP encrypt verify tests",     "CryptoPkg.BaseCryptLib", NULL, NULL, &mOaepTestNum,           mOaepTest           },
+  { "Hkdf extract and expand tests", "CryptoPkg.BaseCryptLib", NULL, NULL, &mHkdfTestNum,           mHkdfTest           },
+  { "Aead AES Gcm tests",            "CryptoPkg.BaseCryptLib", NULL, NULL, &mAeadAesGcmTestNum,     mAeadAesGcmTest     },
+  { "Bn verify tests",               "CryptoPkg.BaseCryptLib", NULL, NULL, &mBnTestNum,             mBnTest             },
+  { "EC verify tests",               "CryptoPkg.BaseCryptLib", NULL, NULL, &mEcTestNum,             mEcTest             },
+  { "X509 Verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mX509TestNum,           mX509Test           },
+  { "PKCS7 Attach Content tests",    "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs7ContentTestNum,   mPkcs7ContentTest   },
+};
 
-#include <Guid/Ip6ConfigHii.h>
+EFI_STATUS
+EFIAPI
+CreateUnitTest (
+  IN     CHAR8                       *UnitTestName,
+  IN     CHAR8                       *UnitTestVersion,
+  IN OUT UNIT_TEST_FRAMEWORK_HANDLE  *Framework
+  )
+{
+  EFI_STATUS  Status;
+  UINTN       SuiteIndex;
+  UINTN       TestIndex;
 
-#define FORMID_MAIN_FORM           1
-#define FORMID_MANUAL_CONFIG_FORM  2
-#define FORMID_HEAD_FORM           3
+  if ((Framework == NULL) || (UnitTestVersion == NULL) || (UnitTestName == NULL)) {
+    return EFI_INVALID_PARAMETER;
+  }
 
-#define IP6_POLICY_AUTO         0
-#define IP6_POLICY_MANUAL       1
-#define DAD_MAX_TRANSMIT_COUNT  10
+  Status = EFI_SUCCESS;
+  //
+  // Start setting up the test framework for running the tests.
+  //
+  Status = InitUnitTestFramework (Framework, UnitTestName, gEfiCallerBaseName, UnitTestVersion);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "Failed in InitUnitTestFramework. Status = %r\n", Status));
+    goto EXIT;
+  }
 
-#define KEY_INTERFACE_ID           0x101
-#define KEY_MANUAL_ADDRESS         0x102
-#define KEY_GATEWAY_ADDRESS        0x103
-#define KEY_DNS_ADDRESS            0x104
-#define KEY_SAVE_CHANGES           0x105
-#define KEY_SAVE_CONFIG_CHANGES    0x106
-#define KEY_IGNORE_CONFIG_CHANGES  0x107
-#define KEY_GET_CURRENT_SETTING    0x108
+  for (SuiteIndex = 0; SuiteIndex < ARRAY_SIZE (mSuiteDesc); SuiteIndex++) {
+    UNIT_TEST_SUITE_HANDLE  Suite = NULL;
+    Status = CreateUnitTestSuite (&Suite, *Framework, mSuiteDesc[SuiteIndex].Title, mSuiteDesc[SuiteIndex].Package, mSuiteDesc[SuiteIndex].Sup, mSuiteDesc[SuiteIndex].Tdn);
+    if (EFI_ERROR (Status)) {
+      Status = EFI_OUT_OF_RESOURCES;
+      goto EXIT;
+    }
 
-#define HOST_ADDRESS_LABEL     0x9000
-#define ROUTE_TABLE_LABEL      0xa000
-#define GATEWAY_ADDRESS_LABEL  0xb000
-#define DNS_ADDRESS_LABEL      0xc000
-#define LABEL_END              0xffff
+    for (TestIndex = 0; TestIndex < *mSuiteDesc[SuiteIndex].TestNum; TestIndex++) {
+      AddTestCase (Suite, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->Description, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->ClassName, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->Func, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->PreReq, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->CleanUp, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->Context);
+    }
+  }
 
-#define INTERFACE_ID_STR_MIN_SIZE  1
-#define INTERFACE_ID_STR_MAX_SIZE  23
-#define INTERFACE_ID_STR_STORAGE   25
-#define IP6_STR_MAX_SIZE           40
-#define ADDRESS_STR_MIN_SIZE       2
-#define ADDRESS_STR_MAX_SIZE       255
-
-///
-/// IP6_CONFIG_IFR_NVDATA contains the IP6 configure
-/// parameters for that NIC.
-///
-#pragma pack(1)
-typedef struct {
-  UINT8     IfType;                                       ///< interface type
-  UINT8     Padding[3];
-  UINT32    Policy;                                       ///< manual or automatic
-  UINT32    DadTransmitCount;                             ///< dad transmits count
-  CHAR16    InterfaceId[INTERFACE_ID_STR_STORAGE];        ///< alternative interface id
-  CHAR16    ManualAddress[ADDRESS_STR_MAX_SIZE];          ///< IP addresses
-  CHAR16    GatewayAddress[ADDRESS_STR_MAX_SIZE];         ///< Gateway address
-  CHAR16    DnsAddress[ADDRESS_STR_MAX_SIZE];             ///< DNS server address
-} IP6_CONFIG_IFR_NVDATA;
-#pragma pack()
+EXIT:
+  return Status;
+}

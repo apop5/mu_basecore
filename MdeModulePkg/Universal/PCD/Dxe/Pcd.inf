@@ -322,6 +322,7 @@
   BaseLib
   PcdLib
   DxeServicesLib
+  VariablePolicyHelperLib
   PcdDatabaseLoaderLib                          ## MU_CHANGE
 
 [Guids]
@@ -337,6 +338,7 @@
   ## NOTIFY
   ## SOMETIMES_CONSUMES
   gEdkiiVariableLockProtocolGuid
+  gEdkiiVariablePolicyProtocolGuid              ## SOMETIMES_CONSUMES
 
 [Pcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdVpdBaseAddress      ## SOMETIMES_CONSUMES

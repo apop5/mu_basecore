@@ -1,125 +1,76 @@
 /** @file
-  This module produces two driver health manager forms.
-  One will be used by BDS core to configure the Configured Required
-  driver health instances, the other will be automatically included by
-  firmware setup (UI).
+  This is defines the tests that will run on BaseCryptLib
 
-Copyright (c) 2013 - 2015, Intel Corporation. All rights reserved.<BR>
-SPDX-License-Identifier: BSD-2-Clause-Patent
+  Copyright (c) Microsoft Corporation.<BR>
+  SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
+#include "TestBaseCryptLib.h"
 
-#pragma once
+SUITE_DESC  mSuiteDesc[] = {
+  //
+  // Title--------------------------Package-------------------Sup--Tdn----TestNum------------TestDesc
+  //
+  { "EKU verify tests",              "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs7EkuTestNum,       mPkcs7EkuTest       },
+  { "HASH verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mHashTestNum,           mHashTest           },
+  { "HMAC verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mHmacTestNum,           mHmacTest           },
+  { "BlockCipher verify tests",      "CryptoPkg.BaseCryptLib", NULL, NULL, &mBlockCipherTestNum,    mBlockCipherTest    },
+  { "RSA verify tests",              "CryptoPkg.BaseCryptLib", NULL, NULL, &mRsaTestNum,            mRsaTest            },
+  { "RSACert verify tests",          "CryptoPkg.BaseCryptLib", NULL, NULL, &mRsaCertTestNum,        mRsaCertTest        },
+  { "PKCS7 verify tests",            "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs7TestNum,          mPkcs7Test          },
+  { "PKCS5 verify tests",            "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs5TestNum,          mPkcs5Test          },
+  { "Authenticode verify tests",     "CryptoPkg.BaseCryptLib", NULL, NULL, &mAuthenticodeTestNum,   mAuthenticodeTest   },
+  { "ImageTimestamp verify tests",   "CryptoPkg.BaseCryptLib", NULL, NULL, &mImageTimestampTestNum, mImageTimestampTest },
+  { "DH verify tests",               "CryptoPkg.BaseCryptLib", NULL, NULL, &mDhTestNum,             mDhTest             },
+  { "PRNG verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mPrngTestNum,           mPrngTest           },
+  { "OAEP encrypt verify tests",     "CryptoPkg.BaseCryptLib", NULL, NULL, &mOaepTestNum,           mOaepTest           },
+  { "Hkdf extract and expand tests", "CryptoPkg.BaseCryptLib", NULL, NULL, &mHkdfTestNum,           mHkdfTest           },
+  { "Aead AES Gcm tests",            "CryptoPkg.BaseCryptLib", NULL, NULL, &mAeadAesGcmTestNum,     mAeadAesGcmTest     },
+  { "Bn verify tests",               "CryptoPkg.BaseCryptLib", NULL, NULL, &mBnTestNum,             mBnTest             },
+  { "EC verify tests",               "CryptoPkg.BaseCryptLib", NULL, NULL, &mEcTestNum,             mEcTest             },
+  { "X509 Verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mX509TestNum,           mX509Test           },
+  { "PKCS7 Attach Content tests",    "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs7ContentTestNum,   mPkcs7ContentTest   },
+};
 
-#include <Uefi.h>
-#include <Base.h>
-#include <Protocol/ComponentName.h>
-#include <Protocol/DriverHealth.h>
-#include <Protocol/HiiConfigAccess.h>
-#include <Protocol/FormBrowser2.h>
-#include <Protocol/HiiDatabase.h>
-#include <Guid/MdeModuleHii.h>
-
-#include <Library/DebugLib.h>
-#include <Library/UefiDriverEntryPoint.h>
-#include <Library/UefiLib.h>
-#include <Library/BaseLib.h>
-#include <Library/BaseMemoryLib.h>
-#include <Library/MemoryAllocationLib.h>
-#include <Library/UefiBootServicesTableLib.h>
-#include <Library/UefiRuntimeServicesTableLib.h>
-#include <Library/UefiBootManagerLib.h>
-#include <Library/HiiLib.h>
-#include <Library/PrintLib.h>
-#include <Library/DevicePathLib.h>
-#include <Library/PcdLib.h>
-
-///
-/// HII specific Vendor Device Path definition.
-///
-typedef struct {
-  VENDOR_DEVICE_PATH          VendorDevicePath;
-  EFI_DEVICE_PATH_PROTOCOL    End;
-} FORM_DEVICE_PATH;
-
-/**
-  This function is invoked if user selected a interactive opcode from Driver Health's
-  Formset. The decision by user is saved to gCallbackKey for later processing.
-
-  @param This            Points to the EFI_HII_CONFIG_ACCESS_PROTOCOL.
-  @param Action          Specifies the type of action taken by the browser.
-  @param QuestionId      A unique value which is sent to the original exporting driver
-                         so that it can identify the type of data to expect.
-  @param Type            The type of value for the question.
-  @param Value           A pointer to the data being sent to the original exporting driver.
-  @param ActionRequest   On return, points to the action requested by the callback function.
-
-  @retval  EFI_SUCCESS           The callback successfully handled the action.
-  @retval  EFI_INVALID_PARAMETER The setup browser call this function with invalid parameters.
-
-**/
 EFI_STATUS
 EFIAPI
-DriverHealthManagerCallback (
-  IN  CONST EFI_HII_CONFIG_ACCESS_PROTOCOL  *This,
-  IN  EFI_BROWSER_ACTION                    Action,
-  IN  EFI_QUESTION_ID                       QuestionId,
-  IN  UINT8                                 Type,
-  IN  EFI_IFR_TYPE_VALUE                    *Value,
-  OUT EFI_BROWSER_ACTION_REQUEST            *ActionRequest
-  );
+CreateUnitTest (
+  IN     CHAR8                       *UnitTestName,
+  IN     CHAR8                       *UnitTestVersion,
+  IN OUT UNIT_TEST_FRAMEWORK_HANDLE  *Framework
+  )
+{
+  EFI_STATUS  Status;
+  UINTN       SuiteIndex;
+  UINTN       TestIndex;
 
-/**
-  This function allows a caller to extract the current configuration for one
-  or more named elements from the target driver.
+  if ((Framework == NULL) || (UnitTestVersion == NULL) || (UnitTestName == NULL)) {
+    return EFI_INVALID_PARAMETER;
+  }
 
+  Status = EFI_SUCCESS;
+  //
+  // Start setting up the test framework for running the tests.
+  //
+  Status = InitUnitTestFramework (Framework, UnitTestName, gEfiCallerBaseName, UnitTestVersion);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "Failed in InitUnitTestFramework. Status = %r\n", Status));
+    goto EXIT;
+  }
 
-  @param This            Points to the EFI_HII_CONFIG_ACCESS_PROTOCOL.
-  @param Request         A null-terminated Unicode string in <ConfigRequest> format.
-  @param Progress        On return, points to a character in the Request string.
-                         Points to the string's null terminator if request was successful.
-                         Points to the most recent '&' before the first failing name/value
-                         pair (or the beginning of the string if the failure is in the
-                         first name/value pair) if the request was not successful.
-  @param Results         A null-terminated Unicode string in <ConfigAltResp> format which
-                         has all values filled in for the names in the Request string.
-                         String to be allocated by the called function.
+  for (SuiteIndex = 0; SuiteIndex < ARRAY_SIZE (mSuiteDesc); SuiteIndex++) {
+    UNIT_TEST_SUITE_HANDLE  Suite = NULL;
+    Status = CreateUnitTestSuite (&Suite, *Framework, mSuiteDesc[SuiteIndex].Title, mSuiteDesc[SuiteIndex].Package, mSuiteDesc[SuiteIndex].Sup, mSuiteDesc[SuiteIndex].Tdn);
+    if (EFI_ERROR (Status)) {
+      Status = EFI_OUT_OF_RESOURCES;
+      goto EXIT;
+    }
 
-  @retval  EFI_SUCCESS            The Results is filled with the requested values.
-  @retval  EFI_OUT_OF_RESOURCES   Not enough memory to store the results.
-  @retval  EFI_INVALID_PARAMETER  Request is illegal syntax, or unknown name.
-  @retval  EFI_NOT_FOUND          Routing data doesn't match any storage in this driver.
+    for (TestIndex = 0; TestIndex < *mSuiteDesc[SuiteIndex].TestNum; TestIndex++) {
+      AddTestCase (Suite, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->Description, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->ClassName, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->Func, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->PreReq, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->CleanUp, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->Context);
+    }
+  }
 
-**/
-EFI_STATUS
-EFIAPI
-DriverHealthManagerFakeExtractConfig (
-  IN  CONST EFI_HII_CONFIG_ACCESS_PROTOCOL  *This,
-  IN  CONST EFI_STRING                      Request,
-  OUT EFI_STRING                            *Progress,
-  OUT EFI_STRING                            *Results
-  );
-
-/**
-  This function processes the results of changes in configuration.
-
-
-  @param This            Points to the EFI_HII_CONFIG_ACCESS_PROTOCOL.
-  @param Configuration   A null-terminated Unicode string in <ConfigResp> format.
-  @param Progress        A pointer to a string filled in with the offset of the most
-                         recent '&' before the first failing name/value pair (or the
-                         beginning of the string if the failure is in the first
-                         name/value pair) or the terminating NULL if all was successful.
-
-  @retval  EFI_SUCCESS            The Results is processed successfully.
-  @retval  EFI_INVALID_PARAMETER  Configuration is NULL.
-  @retval  EFI_NOT_FOUND          Routing data doesn't match any storage in this driver.
-
-**/
-EFI_STATUS
-EFIAPI
-DriverHealthManagerFakeRouteConfig (
-  IN  CONST EFI_HII_CONFIG_ACCESS_PROTOCOL  *This,
-  IN  CONST EFI_STRING                      Configuration,
-  OUT EFI_STRING                            *Progress
-  );
+EXIT:
+  return Status;
+}

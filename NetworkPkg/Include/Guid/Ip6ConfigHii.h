@@ -1,16 +1,76 @@
 /** @file
-  GUIDs used as HII FormSet and HII Package list GUID in Ip6Config driver.
+  This is defines the tests that will run on BaseCryptLib
 
-Copyright (c) 2011 - 2018, Intel Corporation. All rights reserved.<BR>
-SPDX-License-Identifier: BSD-2-Clause-Patent
+  Copyright (c) Microsoft Corporation.<BR>
+  SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
+#include "TestBaseCryptLib.h"
 
-#pragma once
+SUITE_DESC  mSuiteDesc[] = {
+  //
+  // Title--------------------------Package-------------------Sup--Tdn----TestNum------------TestDesc
+  //
+  { "EKU verify tests",              "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs7EkuTestNum,       mPkcs7EkuTest       },
+  { "HASH verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mHashTestNum,           mHashTest           },
+  { "HMAC verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mHmacTestNum,           mHmacTest           },
+  { "BlockCipher verify tests",      "CryptoPkg.BaseCryptLib", NULL, NULL, &mBlockCipherTestNum,    mBlockCipherTest    },
+  { "RSA verify tests",              "CryptoPkg.BaseCryptLib", NULL, NULL, &mRsaTestNum,            mRsaTest            },
+  { "RSACert verify tests",          "CryptoPkg.BaseCryptLib", NULL, NULL, &mRsaCertTestNum,        mRsaCertTest        },
+  { "PKCS7 verify tests",            "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs7TestNum,          mPkcs7Test          },
+  { "PKCS5 verify tests",            "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs5TestNum,          mPkcs5Test          },
+  { "Authenticode verify tests",     "CryptoPkg.BaseCryptLib", NULL, NULL, &mAuthenticodeTestNum,   mAuthenticodeTest   },
+  { "ImageTimestamp verify tests",   "CryptoPkg.BaseCryptLib", NULL, NULL, &mImageTimestampTestNum, mImageTimestampTest },
+  { "DH verify tests",               "CryptoPkg.BaseCryptLib", NULL, NULL, &mDhTestNum,             mDhTest             },
+  { "PRNG verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mPrngTestNum,           mPrngTest           },
+  { "OAEP encrypt verify tests",     "CryptoPkg.BaseCryptLib", NULL, NULL, &mOaepTestNum,           mOaepTest           },
+  { "Hkdf extract and expand tests", "CryptoPkg.BaseCryptLib", NULL, NULL, &mHkdfTestNum,           mHkdfTest           },
+  { "Aead AES Gcm tests",            "CryptoPkg.BaseCryptLib", NULL, NULL, &mAeadAesGcmTestNum,     mAeadAesGcmTest     },
+  { "Bn verify tests",               "CryptoPkg.BaseCryptLib", NULL, NULL, &mBnTestNum,             mBnTest             },
+  { "EC verify tests",               "CryptoPkg.BaseCryptLib", NULL, NULL, &mEcTestNum,             mEcTest             },
+  { "X509 Verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mX509TestNum,           mX509Test           },
+  { "PKCS7 Attach Content tests",    "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs7ContentTestNum,   mPkcs7ContentTest   },
+};
 
-#define IP6_CONFIG_NVDATA_GUID \
-  { \
-    0x2eea107, 0x98db, 0x400e, { 0x98, 0x30, 0x46, 0xa, 0x15, 0x42, 0xd7, 0x99 } \
+EFI_STATUS
+EFIAPI
+CreateUnitTest (
+  IN     CHAR8                       *UnitTestName,
+  IN     CHAR8                       *UnitTestVersion,
+  IN OUT UNIT_TEST_FRAMEWORK_HANDLE  *Framework
+  )
+{
+  EFI_STATUS  Status;
+  UINTN       SuiteIndex;
+  UINTN       TestIndex;
+
+  if ((Framework == NULL) || (UnitTestVersion == NULL) || (UnitTestName == NULL)) {
+    return EFI_INVALID_PARAMETER;
   }
 
-extern EFI_GUID  gIp6ConfigNvDataGuid;
+  Status = EFI_SUCCESS;
+  //
+  // Start setting up the test framework for running the tests.
+  //
+  Status = InitUnitTestFramework (Framework, UnitTestName, gEfiCallerBaseName, UnitTestVersion);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "Failed in InitUnitTestFramework. Status = %r\n", Status));
+    goto EXIT;
+  }
+
+  for (SuiteIndex = 0; SuiteIndex < ARRAY_SIZE (mSuiteDesc); SuiteIndex++) {
+    UNIT_TEST_SUITE_HANDLE  Suite = NULL;
+    Status = CreateUnitTestSuite (&Suite, *Framework, mSuiteDesc[SuiteIndex].Title, mSuiteDesc[SuiteIndex].Package, mSuiteDesc[SuiteIndex].Sup, mSuiteDesc[SuiteIndex].Tdn);
+    if (EFI_ERROR (Status)) {
+      Status = EFI_OUT_OF_RESOURCES;
+      goto EXIT;
+    }
+
+    for (TestIndex = 0; TestIndex < *mSuiteDesc[SuiteIndex].TestNum; TestIndex++) {
+      AddTestCase (Suite, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->Description, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->ClassName, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->Func, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->PreReq, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->CleanUp, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->Context);
+    }
+  }
+
+EXIT:
+  return Status;
+}

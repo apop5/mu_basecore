@@ -1,169 +1,76 @@
 /** @file
-  Application for Cryptographic Primitives Validation.
+  This is defines the tests that will run on BaseCryptLib
 
-Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
-SPDX-License-Identifier: BSD-2-Clause-Patent
+  Copyright (c) Microsoft Corporation.<BR>
+  SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
+#include "TestBaseCryptLib.h"
 
-#pragma once
+SUITE_DESC  mSuiteDesc[] = {
+  //
+  // Title--------------------------Package-------------------Sup--Tdn----TestNum------------TestDesc
+  //
+  { "EKU verify tests",              "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs7EkuTestNum,       mPkcs7EkuTest       },
+  { "HASH verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mHashTestNum,           mHashTest           },
+  { "HMAC verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mHmacTestNum,           mHmacTest           },
+  { "BlockCipher verify tests",      "CryptoPkg.BaseCryptLib", NULL, NULL, &mBlockCipherTestNum,    mBlockCipherTest    },
+  { "RSA verify tests",              "CryptoPkg.BaseCryptLib", NULL, NULL, &mRsaTestNum,            mRsaTest            },
+  { "RSACert verify tests",          "CryptoPkg.BaseCryptLib", NULL, NULL, &mRsaCertTestNum,        mRsaCertTest        },
+  { "PKCS7 verify tests",            "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs7TestNum,          mPkcs7Test          },
+  { "PKCS5 verify tests",            "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs5TestNum,          mPkcs5Test          },
+  { "Authenticode verify tests",     "CryptoPkg.BaseCryptLib", NULL, NULL, &mAuthenticodeTestNum,   mAuthenticodeTest   },
+  { "ImageTimestamp verify tests",   "CryptoPkg.BaseCryptLib", NULL, NULL, &mImageTimestampTestNum, mImageTimestampTest },
+  { "DH verify tests",               "CryptoPkg.BaseCryptLib", NULL, NULL, &mDhTestNum,             mDhTest             },
+  { "PRNG verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mPrngTestNum,           mPrngTest           },
+  { "OAEP encrypt verify tests",     "CryptoPkg.BaseCryptLib", NULL, NULL, &mOaepTestNum,           mOaepTest           },
+  { "Hkdf extract and expand tests", "CryptoPkg.BaseCryptLib", NULL, NULL, &mHkdfTestNum,           mHkdfTest           },
+  { "Aead AES Gcm tests",            "CryptoPkg.BaseCryptLib", NULL, NULL, &mAeadAesGcmTestNum,     mAeadAesGcmTest     },
+  { "Bn verify tests",               "CryptoPkg.BaseCryptLib", NULL, NULL, &mBnTestNum,             mBnTest             },
+  { "EC verify tests",               "CryptoPkg.BaseCryptLib", NULL, NULL, &mEcTestNum,             mEcTest             },
+  { "X509 Verify tests",             "CryptoPkg.BaseCryptLib", NULL, NULL, &mX509TestNum,           mX509Test           },
+  { "PKCS7 Attach Content tests",    "CryptoPkg.BaseCryptLib", NULL, NULL, &mPkcs7ContentTestNum,   mPkcs7ContentTest   },
+};
 
-#include <PiPei.h>
-#include <Uefi.h>
-#include <Library/UefiLib.h>
-#include <Library/DebugLib.h>
-#include <Library/UnitTestLib.h>
-#include <Library/PrintLib.h>
-#include <Library/BaseCryptLib.h>
-#include <Library/BaseLib.h>
-#include <Library/BaseMemoryLib.h>
-#include <Library/MemoryAllocationLib.h>
-// #include <UnitTestTypes.h>
-#include <Library/UnitTestLib.h>
-// #include <Library/UnitTestAssertLib.h>
-
-#define UNIT_TEST_NAME     "BaseCryptLib Unit Test"
-#define UNIT_TEST_VERSION  "1.0"
-
-typedef struct {
-  CHAR8                     *Description;
-  CHAR8                     *ClassName;
-  UNIT_TEST_FUNCTION        Func;
-  UNIT_TEST_PREREQUISITE    PreReq;
-  UNIT_TEST_CLEANUP         CleanUp;
-  UNIT_TEST_CONTEXT         Context;
-} TEST_DESC;
-
-typedef struct {
-  CHAR8                       *Title;
-  CHAR8                       *Package;
-  UNIT_TEST_SUITE_SETUP       Sup;
-  UNIT_TEST_SUITE_TEARDOWN    Tdn;
-  UINTN                       *TestNum;
-  TEST_DESC                   *TestDesc;
-} SUITE_DESC;
-
-extern UINTN      mPkcs7EkuTestNum;
-extern TEST_DESC  mPkcs7EkuTest[];
-
-extern UINTN      mHashTestNum;
-extern TEST_DESC  mHashTest[];
-
-extern UINTN      mHmacTestNum;
-extern TEST_DESC  mHmacTest[];
-
-extern UINTN      mBlockCipherTestNum;
-extern TEST_DESC  mBlockCipherTest[];
-
-extern UINTN      mRsaTestNum;
-extern TEST_DESC  mRsaTest[];
-
-extern UINTN      mRsaCertTestNum;
-extern TEST_DESC  mRsaCertTest[];
-
-extern UINTN      mPkcs7TestNum;
-extern TEST_DESC  mPkcs7Test[];
-
-extern UINTN      mPkcs5TestNum;
-extern TEST_DESC  mPkcs5Test[];
-
-extern UINTN      mAuthenticodeTestNum;
-extern TEST_DESC  mAuthenticodeTest[];
-
-extern UINTN      mImageTimestampTestNum;
-extern TEST_DESC  mImageTimestampTest[];
-
-extern UINTN      mDhTestNum;
-extern TEST_DESC  mDhTest[];
-
-extern UINTN      mPrngTestNum;
-extern TEST_DESC  mPrngTest[];
-
-extern UINTN      mOaepTestNum;
-extern TEST_DESC  mOaepTest[];
-
-extern UINTN      mRsaPssTestNum;
-extern TEST_DESC  mRsaPssTest[];
-
-extern UINTN      mHkdfTestNum;
-extern TEST_DESC  mHkdfTest[];
-
-extern UINTN      mAeadAesGcmTestNum;
-extern TEST_DESC  mAeadAesGcmTest[];
-
-extern UINTN      mBnTestNum;
-extern TEST_DESC  mBnTest[];
-
-extern UINTN      mEcTestNum;
-extern TEST_DESC  mEcTest[];
-
-extern UINTN      mX509TestNum;
-extern TEST_DESC  mX509Test[];
-
-extern UINTN      mPkcs7ContentTestNum;
-extern TEST_DESC  mPkcs7ContentTest[];
-
-//
-// Test Case only for MbedTls.
-//
-extern UINTN      mPkcs7EkuTestMbedTlsNum;
-extern TEST_DESC  mPkcs7EkuTestMbedTls[];
-
-extern UINTN      mRsaTestMbedTlsNum;
-extern TEST_DESC  mRsaTestMbedTls[];
-
-extern UINTN      mPkcs7TestMbedTlsNum;
-extern TEST_DESC  mPkcs7TestMbedTls[];
-
-extern UINTN      mOaepTestMbedTlsNum;
-extern TEST_DESC  mOaepTestMbedTls[];
-
-extern UINTN      mPkcs7ContentTestMbedTlsNum;
-extern TEST_DESC  mPkcs7ContentTestMbedTls[];
-
-/** Creates a framework you can use */
 EFI_STATUS
 EFIAPI
 CreateUnitTest (
   IN     CHAR8                       *UnitTestName,
   IN     CHAR8                       *UnitTestVersion,
   IN OUT UNIT_TEST_FRAMEWORK_HANDLE  *Framework
-  );
+  )
+{
+  EFI_STATUS  Status;
+  UINTN       SuiteIndex;
+  UINTN       TestIndex;
 
-/**
-  Validate UEFI-OpenSSL DH Interfaces.
+  if ((Framework == NULL) || (UnitTestVersion == NULL) || (UnitTestName == NULL)) {
+    return EFI_INVALID_PARAMETER;
+  }
 
-  @retval  EFI_SUCCESS  Validation succeeded.
-  @retval  EFI_ABORTED  Validation failed.
+  Status = EFI_SUCCESS;
+  //
+  // Start setting up the test framework for running the tests.
+  //
+  Status = InitUnitTestFramework (Framework, UnitTestName, gEfiCallerBaseName, UnitTestVersion);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "Failed in InitUnitTestFramework. Status = %r\n", Status));
+    goto EXIT;
+  }
 
-**/
-EFI_STATUS
-ValidateCryptDh (
-  VOID
-  );
+  for (SuiteIndex = 0; SuiteIndex < ARRAY_SIZE (mSuiteDesc); SuiteIndex++) {
+    UNIT_TEST_SUITE_HANDLE  Suite = NULL;
+    Status = CreateUnitTestSuite (&Suite, *Framework, mSuiteDesc[SuiteIndex].Title, mSuiteDesc[SuiteIndex].Package, mSuiteDesc[SuiteIndex].Sup, mSuiteDesc[SuiteIndex].Tdn);
+    if (EFI_ERROR (Status)) {
+      Status = EFI_OUT_OF_RESOURCES;
+      goto EXIT;
+    }
 
-/**
-  Validate UEFI-OpenSSL pseudorandom number generator interfaces.
+    for (TestIndex = 0; TestIndex < *mSuiteDesc[SuiteIndex].TestNum; TestIndex++) {
+      AddTestCase (Suite, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->Description, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->ClassName, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->Func, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->PreReq, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->CleanUp, (mSuiteDesc[SuiteIndex].TestDesc + TestIndex)->Context);
+    }
+  }
 
-  @retval  EFI_SUCCESS  Validation succeeded.
-  @retval  EFI_ABORTED  Validation failed.
-
-**/
-EFI_STATUS
-ValidateCryptPrng (
-  VOID
-  );
-
-/**
-  Initialize the unit test framework, suite, and unit tests for the
-  sample unit tests and run the unit tests.
-
-  @retval  EFI_SUCCESS           All test cases were dispatched.
-  @retval  EFI_OUT_OF_RESOURCES  There are not enough resources available to
-                                 initialize the unit tests.
-**/
-EFI_STATUS
-EFIAPI
-UefiTestMain (
-  VOID
-  );
+EXIT:
+  return Status;
+}
